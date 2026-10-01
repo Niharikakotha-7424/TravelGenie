@@ -1,27 +1,90 @@
 import requests
 
 
+# -----------------------------------------------------
+# DEMO FALLBACK FOOD DATA
+# -----------------------------------------------------
+
+def get_demo_food_places(lat, lon):
+    """
+    Fallback food data used when OpenStreetMap Overpass
+    services are unavailable.
+
+    These are clearly marked as Demo Data.
+    """
+
+    return [
+        {
+            "name": "Local Restaurant",
+            "type": "Restaurant",
+            "lat": float(lat) + 0.003,
+            "lon": float(lon) + 0.003,
+            "price": None,
+            "rating": None,
+            "tag": "Demo Data"
+        },
+        {
+            "name": "City Cafe",
+            "type": "Cafe",
+            "lat": float(lat) - 0.002,
+            "lon": float(lon) + 0.002,
+            "price": None,
+            "rating": None,
+            "tag": "Demo Data"
+        },
+        {
+            "name": "Local Food Court",
+            "type": "Food Court",
+            "lat": float(lat) + 0.002,
+            "lon": float(lon) - 0.003,
+            "price": None,
+            "rating": None,
+            "tag": "Demo Data"
+        }
+    ]
+
+
+# -----------------------------------------------------
+# GET FOOD PLACES
+# -----------------------------------------------------
+
 def get_food_places(lat, lon, radius=10000):
     """
     Find real food-related places near a destination
     using OpenStreetMap Overpass API.
+
+    If Overpass is unavailable, return clearly labelled
+    demo data instead of causing the Flask page to fail.
     """
 
-    # -----------------------------------------------------
+    # -------------------------------------------------
     # CHECK COORDINATES
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     if lat is None or lon is None:
+
         return {
             "success": False,
             "message": "Destination coordinates are unavailable.",
             "foods": []
         }
 
+    try:
+        lat = float(lat)
+        lon = float(lon)
 
-    # -----------------------------------------------------
+    except (TypeError, ValueError):
+
+        return {
+            "success": False,
+            "message": "Invalid destination coordinates.",
+            "foods": []
+        }
+
+
+    # -------------------------------------------------
     # OVERPASS QUERY
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     query = f"""
     [out:json][timeout:20];
@@ -44,34 +107,43 @@ def get_food_places(lat, lon, radius=10000):
     """
 
 
-    # -----------------------------------------------------
+    # -------------------------------------------------
     # OVERPASS SERVERS
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     urls = [
         "https://overpass-api.de/api/interpreter",
-        "https://overpass.kumi.systems/api/interpreter"
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter"
     ]
 
 
     data = None
 
 
-    # -----------------------------------------------------
+    # -------------------------------------------------
     # REQUEST LIVE DATA
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     for url in urls:
 
         try:
 
+            print(
+                "FOOD API REQUEST:",
+                url
+            )
+
             response = requests.post(
                 url,
                 data=query,
                 headers={
-                    "User-Agent": "TravelGenie/1.0"
+                    "User-Agent": (
+                        "TravelGenie/1.0 "
+                        "(travel planning application)"
+                    )
                 },
-                timeout=30
+                timeout=15
             )
 
             response.raise_for_status()
@@ -90,6 +162,7 @@ def get_food_places(lat, lon, radius=10000):
 
             print(
                 "FOOD API REQUEST ERROR:",
+                url,
                 error
             )
 
@@ -100,35 +173,51 @@ def get_food_places(lat, lon, radius=10000):
 
             print(
                 "FOOD API JSON ERROR:",
+                url,
                 error
             )
 
             continue
 
 
-    # -----------------------------------------------------
-    # BOTH SERVERS FAILED
-    # -----------------------------------------------------
+    # -------------------------------------------------
+    # ALL OVERPASS SERVERS FAILED
+    # -------------------------------------------------
 
     if data is None:
 
+        print(
+            "FOOD API UNAVAILABLE - USING DEMO DATA"
+        )
+
+        demo_foods = get_demo_food_places(
+            lat,
+            lon
+        )
+
         return {
-            "success": False,
-            "message": "Unable to fetch live food data.",
-            "foods": []
+            "success": True,
+            "message": (
+                "Live food data is temporarily unavailable. "
+                "Showing Demo Data."
+            ),
+            "foods": demo_foods
         }
 
 
-    # -----------------------------------------------------
+    # -------------------------------------------------
     # PROCESS FOOD PLACES
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     foods = []
 
     seen_names = set()
 
 
-    for element in data.get("elements", []):
+    for element in data.get(
+        "elements",
+        []
+    ):
 
         tags = element.get(
             "tags",
@@ -136,30 +225,41 @@ def get_food_places(lat, lon, radius=10000):
         )
 
 
-        # -----------------------------------------------
+        # ---------------------------------------------
         # FOOD PLACE NAME
-        # -----------------------------------------------
+        # ---------------------------------------------
 
-        name = tags.get("name")
+        name = tags.get(
+            "name"
+        )
 
 
         if not name:
             continue
 
 
-        name_key = name.strip().lower()
+        name = name.strip()
+
+
+        if not name:
+            continue
+
+
+        name_key = name.lower()
 
 
         if name_key in seen_names:
             continue
 
 
-        seen_names.add(name_key)
+        seen_names.add(
+            name_key
+        )
 
 
-        # -----------------------------------------------
+        # ---------------------------------------------
         # FOOD TYPE
-        # -----------------------------------------------
+        # ---------------------------------------------
 
         amenity = tags.get(
             "amenity",
@@ -168,10 +268,15 @@ def get_food_places(lat, lon, radius=10000):
 
 
         type_names = {
+
             "restaurant": "Restaurant",
+
             "cafe": "Cafe",
+
             "fast_food": "Fast Food",
+
             "food_court": "Food Court"
+
         }
 
 
@@ -181,9 +286,9 @@ def get_food_places(lat, lon, radius=10000):
         )
 
 
-        # -----------------------------------------------
+        # ---------------------------------------------
         # GET COORDINATES
-        # -----------------------------------------------
+        # ---------------------------------------------
 
         if element.get("type") == "node":
 
@@ -211,13 +316,34 @@ def get_food_places(lat, lon, radius=10000):
             )
 
 
-        if food_lat is None or food_lon is None:
+        if (
+            food_lat is None
+            or food_lon is None
+        ):
             continue
 
 
-        # -----------------------------------------------
+        # ---------------------------------------------
         # ADD FOOD PLACE
-        # -----------------------------------------------
+        # ---------------------------------------------
+
+        try:
+
+            food_lat = float(
+                food_lat
+            )
+
+            food_lon = float(
+                food_lon
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            continue
+
 
         foods.append({
 
@@ -225,11 +351,11 @@ def get_food_places(lat, lon, radius=10000):
 
             "type": food_type,
 
-            "lat": float(food_lat),
+            "lat": food_lat,
 
-            "lon": float(food_lon),
+            "lon": food_lon,
 
-            # OpenStreetMap does not reliably provide
+            # OSM does not reliably provide
             # restaurant prices or ratings.
 
             "price": None,
@@ -241,16 +367,46 @@ def get_food_places(lat, lon, radius=10000):
         })
 
 
-    # -----------------------------------------------------
+    # -------------------------------------------------
+    # NO LIVE RESULTS
+    # -------------------------------------------------
+
+    if not foods:
+
+        print(
+            "FOOD API RETURNED NO NAMED PLACES - "
+            "USING DEMO DATA"
+        )
+
+        demo_foods = get_demo_food_places(
+            lat,
+            lon
+        )
+
+        return {
+
+            "success": True,
+
+            "message": (
+                "No named food places were found. "
+                "Showing Demo Data."
+            ),
+
+            "foods": demo_foods
+
+        }
+
+
+    # -------------------------------------------------
     # LIMIT RESULTS
-    # -----------------------------------------------------
+    # -------------------------------------------------
 
     foods = foods[:20]
 
 
-    # -----------------------------------------------------
-    # RETURN RESULT
-    # -----------------------------------------------------
+    # -------------------------------------------------
+    # RETURN LIVE RESULT
+    # -------------------------------------------------
 
     return {
 

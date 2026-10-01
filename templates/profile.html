@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="profile-big">
+            👤
+        </div>
+
+        <h1>
+            My Profile
+        </h1>
+
+        <p>
+            {{ user.email }}
+        </p>
+
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    value="{{ user.full_name }}"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    value="{{ user.username }}"
+                    disabled
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Mobile
+                </label>
+
+                <input
+                    type="text"
+                    name="mobile"
+                    value="{{ user.mobile or '' }}"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="generate-btn"
+            >
+                Update Profile
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

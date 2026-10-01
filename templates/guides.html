@@ -1,0 +1,641 @@
+{% extends "base.html" %}
+
+{% block title %}
+Local Guides
+{% endblock %}
+
+{% block content %}
+
+<section class="content-page">
+
+<style>
+
+    /* =========================
+       GUIDE REVIEW SECTION
+    ========================= */
+
+    .guide-review-box {
+        margin: 14px 0 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+
+    .guide-review-rating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .guide-review-stars {
+        color: #f59e0b;
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .guide-review-number {
+        font-weight: 800;
+        color: #222;
+        font-size: 14px;
+    }
+
+    .guide-review-count {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .guide-no-reviews {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .guide-reviews-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+
+    .guide-reviews-btn:hover {
+        background: #e0e7ff;
+        transform: translateY(-1px);
+    }
+
+</style>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        Travel<span>Genie</span>
+    </div>
+
+    <div class="nav-right">
+
+        {% if user %}
+
+            <span class="user-name">
+                👋 {{ user.full_name or user.username }}
+            </span>
+
+        {% endif %}
+
+        <a
+            href="{{ url_for('result') }}"
+            class="back-btn"
+        >
+            ← Back
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="hero-icon">
+        🧭
+    </div>
+
+    <h1>
+        Local <span>Guides</span>
+    </h1>
+
+    <p>
+        Discover helpful local guide options for your
+        destination and explore the city like a local.
+    </p>
+
+    {% if trip and trip.get("destination") %}
+
+        <div class="destination">
+            📍 {{ trip.get("destination") }}
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- =========================
+     DATA SOURCE
+========================= -->
+
+<div class="data-label">
+
+    {% if demo_data %}
+
+        <span class="demo-badge">
+            ⚠️ Demo Data
+        </span>
+
+    {% else %}
+
+        <span class="live-badge">
+            ✓ {{ data_source }}
+        </span>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =========================
+     GUIDE CARDS
+========================= -->
+
+<main class="container">
+
+    {% if guides %}
+
+        <div class="guides-grid">
+
+            {% for guide in guides %}
+
+                <div
+                    class="guide-card"
+                    data-destination="{{ trip.get('destination', '') }}"
+                    data-item="{{ guide.get('name', 'Local Guide') }}"
+                >
+
+
+                    <div class="guide-icon">
+                        👤
+                    </div>
+
+
+                    <h2>
+                        {{ guide.get(
+                            "name",
+                            "Local Guide"
+                        ) }}
+                    </h2>
+
+
+                    <div class="guide-info">
+
+                        <span class="icon">
+                            📍
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Location
+                            </strong>
+
+                            <br>
+
+                            {{ guide.get(
+                                "location",
+                                trip.get(
+                                    "destination",
+                                    "Destination"
+                                )
+                            ) }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="guide-info">
+
+                        <span class="icon">
+                            🗣️
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Languages
+                            </strong>
+
+                            <br>
+
+                            {{ guide.get(
+                                "languages",
+                                "English"
+                            ) }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="guide-info">
+
+                        <span class="icon">
+                            🎯
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Expertise
+                            </strong>
+
+                            <br>
+
+                            <span class="expertise">
+
+                                {{ guide.get(
+                                    "expertise",
+                                    "Local sightseeing"
+                                ) }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EXISTING GUIDE RATING -->
+
+                    <div class="rating">
+
+                        ⭐
+
+                        <span>
+
+                            {{ guide.get(
+                                "rating",
+                                "N/A"
+                            ) }}
+
+                        </span>
+
+                        / 5
+
+                    </div>
+
+
+                    <!-- =========================
+                         13.9 USER REVIEW RATING
+                    ========================= -->
+
+                    <div class="guide-review-box">
+
+                        <div class="guide-review-rating">
+
+                            <span class="guide-review-stars">
+                                ☆☆☆☆☆
+                            </span>
+
+                            <span class="guide-review-number">
+                                -
+                            </span>
+
+                            <span class="guide-review-count">
+                                Loading...
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VIEW REVIEWS -->
+
+                    <a
+                        href="{{ url_for('reviews_page') }}?destination={{ trip.get('destination', '')|urlencode }}&item_name={{ guide.get('name', 'Local Guide')|urlencode }}&category=Guide"
+                        class="guide-reviews-btn"
+                    >
+                        ⭐ View Reviews
+                    </a>
+
+
+                    <!-- EXPERIENCE -->
+
+                    <div class="experience">
+
+                        💡
+
+                        {{ guide.get(
+                            "experience",
+                            "Explore the destination with local knowledge."
+                        ) }}
+
+                    </div>
+
+
+                    <!-- DATA SOURCE -->
+
+                    {% if guide.get("data_source") %}
+
+                        <div
+                            style="
+                                margin-top: 12px;
+                                text-align: center;
+                                font-size: 12px;
+                                color: #9ca3af;
+                            "
+                        >
+
+                            {{ guide.get("data_source") }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- REQUEST GUIDE -->
+
+                    <a
+                        href="{{ url_for(
+                            'request_guide',
+                            guide=guide.get(
+                                'name',
+                                'Local Guide'
+                            )
+                        ) }}"
+                        class="request-btn"
+                    >
+                        🧭 Request a Guide
+                    </a>
+
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-box">
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h2>
+                No guide information available
+            </h2>
+
+            <p>
+                We couldn't find guide information
+                for this destination right now.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+        © 2026 TravelGenie ·
+        Your AI-powered smart travel companion 🌍
+    </p>
+
+</footer>
+
+
+<!-- =========================
+     13.9 REVIEW SCRIPT
+========================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const guideCards =
+            document.querySelectorAll(
+                ".guide-card"
+            );
+
+
+        guideCards.forEach(
+            function (card) {
+
+                const destination =
+                    card.dataset.destination;
+
+                const itemName =
+                    card.dataset.item;
+
+
+                const params =
+                    new URLSearchParams({
+
+                        destination:
+                            destination,
+
+                        item_name:
+                            itemName,
+
+                        category:
+                            "Guide"
+
+                    });
+
+
+                fetch(
+                    "/api/review-stats?" +
+                    params.toString()
+                )
+
+                .then(
+                    function (response) {
+
+                        return response.json();
+
+                    }
+                )
+
+                .then(
+                    function (data) {
+
+                        if (!data.success) {
+
+                            throw new Error(
+                                "Unable to load guide rating."
+                            );
+
+                        }
+
+
+                        const starsElement =
+                            card.querySelector(
+                                ".guide-review-stars"
+                            );
+
+
+                        const numberElement =
+                            card.querySelector(
+                                ".guide-review-number"
+                            );
+
+
+                        const countElement =
+                            card.querySelector(
+                                ".guide-review-count"
+                            );
+
+
+                        /* =====================
+                           NO REVIEWS
+                        ===================== */
+
+                        if (
+                            data.total_reviews === 0
+                        ) {
+
+                            starsElement.textContent =
+                                "☆☆☆☆☆";
+
+                            starsElement.style.color =
+                                "#999";
+
+                            numberElement.textContent =
+                                "";
+
+                            countElement.textContent =
+                                "No reviews yet";
+
+                            return;
+
+                        }
+
+
+                        /* =====================
+                           CALCULATE RATING
+                        ===================== */
+
+                        const rating =
+                            Number(
+                                data.average_rating
+                            ) || 0;
+
+
+                        const roundedRating =
+                            Math.round(
+                                rating
+                            );
+
+
+                        const fullStars =
+                            "★".repeat(
+                                roundedRating
+                            );
+
+
+                        const emptyStars =
+                            "☆".repeat(
+                                5 - roundedRating
+                            );
+
+
+                        starsElement.textContent =
+                            fullStars +
+                            emptyStars;
+
+
+                        starsElement.style.color =
+                            "#f59e0b";
+
+
+                        numberElement.textContent =
+                            rating.toFixed(1);
+
+
+                        /* =====================
+                           REVIEW COUNT
+                        ===================== */
+
+                        countElement.textContent =
+                            data.total_reviews === 1
+                            ? "1 review"
+                            : data.total_reviews +
+                              " reviews";
+
+                    }
+                )
+
+                .catch(
+                    function (error) {
+
+                        console.error(
+                            "Guide review loading error:",
+                            error
+                        );
+
+
+                        const starsElement =
+                            card.querySelector(
+                                ".guide-review-stars"
+                            );
+
+
+                        const numberElement =
+                            card.querySelector(
+                                ".guide-review-number"
+                            );
+
+
+                        const countElement =
+                            card.querySelector(
+                                ".guide-review-count"
+                            );
+
+
+                        starsElement.textContent =
+                            "☆☆☆☆☆";
+
+
+                        starsElement.style.color =
+                            "#999";
+
+
+                        numberElement.textContent =
+                            "";
+
+
+                        countElement.textContent =
+                            "Ratings unavailable";
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+</section>
+
+{% endblock %}

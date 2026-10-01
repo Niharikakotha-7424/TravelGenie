@@ -1,0 +1,345 @@
+{% extends "base.html" %}
+
+{% block title %}
+Stays
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .stay-review-box {
+        margin: 12px 0 18px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+
+    .stay-review-rating {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    .stay-review-stars {
+        color: #f59e0b;
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .stay-review-number {
+        font-weight: 800;
+        color: #222;
+        font-size: 14px;
+    }
+
+    .stay-review-count {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .stay-no-reviews {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .stay-reviews-btn {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+
+    .stay-reviews-btn:hover {
+        background: #e0e7ff;
+    }
+</style>
+
+
+<section class="content-page">
+
+    <div class="planner-header">
+
+        <div class="badge">
+            🏨 STAY DISCOVERY
+        </div>
+
+        <h1>
+            Stays in {{ trip.destination }}
+        </h1>
+
+        <p>
+            Prototype accommodation recommendations.
+        </p>
+
+    </div>
+
+
+    <div class="stay-grid">
+
+        {% for stay in stays %}
+
+        <div class="stay-card">
+
+            <div class="stay-icon">
+                🏨
+            </div>
+
+
+            <span class="demo-label">
+                {{ stay.tag }}
+            </span>
+
+
+            <h2>
+                {{ stay.name }}
+            </h2>
+
+
+            <p>
+                {{ stay.type }}
+            </p>
+
+
+            <!-- Existing Stay Rating -->
+            <div class="rating">
+                ⭐ {{ stay.rating }}
+            </div>
+
+
+            <!-- =========================================
+                 13.7 — USER REVIEW RATING
+                 ========================================= -->
+
+            <div
+                class="stay-review-box"
+                data-destination="{{ trip.destination }}"
+                data-item="{{ stay.name }}"
+            >
+
+                <div class="stay-review-rating">
+
+                    <span class="stay-review-stars">
+                        ☆☆☆☆☆
+                    </span>
+
+                    <span class="stay-review-number">
+                        -
+                    </span>
+
+                    <span class="stay-review-count">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- VIEW REVIEWS -->
+            <a
+                href="{{ url_for('reviews_page') }}?destination={{ trip.destination|urlencode }}&item_name={{ stay.name|urlencode }}&category=Stay"
+                class="stay-reviews-btn"
+            >
+                ⭐ View Reviews
+            </a>
+
+
+            <!-- PRICE -->
+            <strong>
+                ₹{{ stay.price }}
+                <small>/night</small>
+            </strong>
+
+
+            <!-- EXISTING BUTTON -->
+            <button class="secondary-btn">
+                View Option
+            </button>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     13.7 — LOAD STAY REVIEW STATISTICS
+     ========================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const reviewBoxes =
+        document.querySelectorAll(".stay-review-box");
+
+
+    reviewBoxes.forEach(function (box) {
+
+        const destination =
+            box.dataset.destination;
+
+        const itemName =
+            box.dataset.item;
+
+
+        const params =
+            new URLSearchParams({
+                destination: destination,
+                item_name: itemName,
+                category: "Stay"
+            });
+
+
+        fetch(
+            "/api/review-stats?" +
+            params.toString()
+        )
+
+        .then(function (response) {
+            return response.json();
+        })
+
+        .then(function (data) {
+
+            if (!data.success) {
+                throw new Error(
+                    "Unable to load stay rating."
+                );
+            }
+
+
+            const starsElement =
+                box.querySelector(
+                    ".stay-review-stars"
+                );
+
+            const numberElement =
+                box.querySelector(
+                    ".stay-review-number"
+                );
+
+            const countElement =
+                box.querySelector(
+                    ".stay-review-count"
+                );
+
+
+            /* No reviews */
+            if (data.total_reviews === 0) {
+
+                starsElement.textContent =
+                    "☆☆☆☆☆";
+
+                starsElement.style.color =
+                    "#999";
+
+                numberElement.textContent =
+                    "";
+
+                countElement.textContent =
+                    "No reviews yet";
+
+                return;
+            }
+
+
+            /* Rating */
+            const rating =
+                Number(data.average_rating) || 0;
+
+
+            const roundedRating =
+                Math.round(rating);
+
+
+            const fullStars =
+                "★".repeat(roundedRating);
+
+
+            const emptyStars =
+                "☆".repeat(
+                    5 - roundedRating
+                );
+
+
+            starsElement.textContent =
+                fullStars + emptyStars;
+
+
+            starsElement.style.color =
+                "#f59e0b";
+
+
+            numberElement.textContent =
+                rating.toFixed(1);
+
+
+            /* Review count */
+            countElement.textContent =
+                data.total_reviews === 1
+                ? "1 review"
+                : data.total_reviews + " reviews";
+
+        })
+
+
+        .catch(function (error) {
+
+            console.error(
+                "Stay review loading error:",
+                error
+            );
+
+
+            const starsElement =
+                box.querySelector(
+                    ".stay-review-stars"
+                );
+
+            const numberElement =
+                box.querySelector(
+                    ".stay-review-number"
+                );
+
+            const countElement =
+                box.querySelector(
+                    ".stay-review-count"
+                );
+
+
+            starsElement.textContent =
+                "☆☆☆☆☆";
+
+
+            starsElement.style.color =
+                "#999";
+
+
+            numberElement.textContent =
+                "";
+
+
+            countElement.textContent =
+                "Ratings unavailable";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

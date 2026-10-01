@@ -1,0 +1,762 @@
+{% extends "base.html" %}
+
+{% block title %}
+Food Recommendations
+{% endblock %}
+
+{% block content %}
+
+<section class="content-page">
+
+    <!-- PAGE HEADER -->
+
+    <div class="planner-header">
+
+        <div class="badge">
+            🍴 FOOD DISCOVERY
+        </div>
+
+        <h1>
+            Food in {{ trip.destination }}
+        </h1>
+
+        <p>
+            Discover food places around your destination.
+        </p>
+
+    </div>
+
+
+    <!-- DATA STATUS -->
+
+    {% if demo_mode %}
+
+    <div class="food-status demo-status">
+
+        ⚠️
+        Live food data was unavailable.
+        Showing clearly labelled Demo Data.
+
+    </div>
+
+    {% else %}
+
+    <div class="food-status live-status">
+
+        🟢
+        Live food locations found from
+        OpenStreetMap.
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- FOOD GRID -->
+
+    <div class="food-grid">
+
+        {% for food in foods %}
+
+        <div class="food-card">
+
+            <!-- TOP -->
+
+            <div class="food-top">
+
+                <div class="food-icon">
+                    🍴
+                </div>
+
+                <span class="demo-label">
+                    {{ food.tag }}
+                </span>
+
+            </div>
+
+
+            <!-- NAME -->
+
+            <h2>
+                {{ food.name }}
+            </h2>
+
+
+            <!-- TYPE -->
+
+            <p class="food-type">
+                {{ food.type }}
+            </p>
+
+
+            <!-- EXISTING RATING -->
+
+            {% if food.rating %}
+
+            <div class="rating">
+                ⭐ {{ food.rating }}
+            </div>
+
+            {% else %}
+
+            <div class="rating unavailable">
+                ⭐ Rating unavailable
+            </div>
+
+            {% endif %}
+
+
+            <!-- 13.8 — USER REVIEW RATING -->
+
+            <div
+                class="food-review-box"
+                data-destination="{{ trip.destination }}"
+                data-item="{{ food.name }}"
+            >
+
+                <div class="food-review-rating">
+
+                    <span class="food-review-stars">
+                        ☆☆☆☆☆
+                    </span>
+
+                    <span class="food-review-number">
+                        -
+                    </span>
+
+                    <span class="food-review-count">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- VIEW REVIEWS -->
+
+            <a
+                href="{{ url_for('reviews_page') }}?destination={{ trip.destination|urlencode }}&item_name={{ food.name|urlencode }}&category=Food"
+                class="food-reviews-btn"
+            >
+                ⭐ View Reviews
+            </a>
+
+
+            <!-- PRICE -->
+
+            {% if food.price is not none %}
+
+            <div class="food-price">
+
+                <strong>
+                    ₹{{ food.price }}
+                </strong>
+
+            </div>
+
+            {% else %}
+
+            <div class="food-price unavailable">
+
+                <strong>
+                    Price unavailable
+                </strong>
+
+                <small>
+                    Check the food place for current prices
+                </small>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- LOCATION -->
+
+            {% if food.lat and food.lon %}
+
+            <a
+                href="https://www.openstreetmap.org/?mlat={{ food.lat }}&mlon={{ food.lon }}#map=18/{{ food.lat }}/{{ food.lon }}"
+                target="_blank"
+                rel="noopener"
+                class="secondary-btn food-map-btn"
+            >
+                📍 View Location
+            </a>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- EMPTY STATE -->
+
+    {% if not foods %}
+
+    <div class="section-card">
+
+        <h2>
+            😕 No food places found
+        </h2>
+
+        <p>
+            We could not find food places for
+            {{ trip.destination }} right now.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="result-actions">
+
+        <a
+            href="{{ url_for('result') }}"
+            class="primary-btn"
+        >
+            ← Back to Trip
+        </a>
+
+        <a
+            href="{{ url_for('map_view') }}"
+            class="secondary-btn"
+        >
+            🗺️ Open Smart Map
+        </a>
+
+        <a
+            href="{{ url_for('stays') }}"
+            class="secondary-btn"
+        >
+            🏨 Explore Stays
+        </a>
+
+        <a
+            href="{{ url_for('budget') }}"
+            class="secondary-btn"
+        >
+            💰 Optimize Budget
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- PAGE STYLES -->
+
+<style>
+
+    .food-status {
+
+        padding: 16px 20px;
+
+        margin: 20px 0;
+
+        border-radius: 14px;
+
+        font-weight: 600;
+
+    }
+
+
+    .live-status {
+
+        background: #eefbf3;
+
+        border: 1px solid #b9e6c8;
+
+    }
+
+
+    .demo-status {
+
+        background: #fff7e6;
+
+        border: 1px solid #f0d28a;
+
+    }
+
+
+    .food-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 22px;
+
+        margin-top: 25px;
+
+    }
+
+
+    .food-card {
+
+        background: #ffffff;
+
+        border-radius: 20px;
+
+        padding: 24px;
+
+        border: 1px solid #e5e7eb;
+
+        box-shadow:
+            0 10px 30px
+            rgba(0, 0, 0, 0.08);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+
+    }
+
+
+    .food-card:hover {
+
+        transform: translateY(-6px);
+
+        box-shadow:
+            0 16px 35px
+            rgba(0, 0, 0, 0.12);
+
+    }
+
+
+    .food-top {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 10px;
+
+        margin-bottom: 18px;
+
+    }
+
+
+    .food-icon {
+
+        width: 52px;
+
+        height: 52px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-radius: 15px;
+
+        background: #f1f5f9;
+
+        font-size: 26px;
+
+    }
+
+
+    .demo-label {
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        padding: 6px 10px;
+
+        border-radius: 20px;
+
+        background: #fef3c7;
+
+    }
+
+
+    .food-card h2 {
+
+        margin: 0 0 8px 0;
+
+        font-size: 20px;
+
+    }
+
+
+    .food-type {
+
+        margin: 0 0 12px 0;
+
+        opacity: 0.7;
+
+    }
+
+
+    .rating {
+
+        margin-bottom: 14px;
+
+        font-weight: 600;
+
+    }
+
+
+    .unavailable {
+
+        opacity: 0.6;
+
+    }
+
+
+    /* =====================================
+       13.8 — FOOD USER REVIEW RATING
+       ===================================== */
+
+    .food-review-box {
+
+        margin: 12px 0 12px;
+
+        padding: 12px 14px;
+
+        border-radius: 12px;
+
+        background: #fafafa;
+
+        border: 1px solid #eeeeee;
+
+    }
+
+
+    .food-review-rating {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .food-review-stars {
+
+        color: #f59e0b;
+
+        font-size: 18px;
+
+        letter-spacing: 1px;
+
+    }
+
+
+    .food-review-number {
+
+        font-weight: 800;
+
+        color: #222;
+
+        font-size: 14px;
+
+    }
+
+
+    .food-review-count {
+
+        color: #777;
+
+        font-size: 13px;
+
+    }
+
+
+    .food-reviews-btn {
+
+        display: block;
+
+        text-align: center;
+
+        text-decoration: none;
+
+        background: #eef2ff;
+
+        color: #4f46e5;
+
+        padding: 10px 14px;
+
+        border-radius: 10px;
+
+        font-weight: 600;
+
+        margin-bottom: 14px;
+
+        transition: 0.2s;
+
+    }
+
+
+    .food-reviews-btn:hover {
+
+        background: #e0e7ff;
+
+    }
+
+
+    .food-price {
+
+        margin-bottom: 18px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 3px;
+
+    }
+
+
+    .food-price strong {
+
+        font-size: 19px;
+
+    }
+
+
+    .food-price small {
+
+        opacity: 0.65;
+
+    }
+
+
+    .food-map-btn {
+
+        display: inline-block;
+
+        text-decoration: none;
+
+    }
+
+
+    @media (max-width: 1000px) {
+
+        .food-grid {
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+        }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+        .food-grid {
+
+            grid-template-columns:
+                1fr;
+
+        }
+
+    }
+
+</style>
+
+
+<!-- 13.8 — REVIEW RATING SCRIPT -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const reviewBoxes =
+        document.querySelectorAll(".food-review-box");
+
+
+    reviewBoxes.forEach(function (box) {
+
+        const destination =
+            box.dataset.destination;
+
+        const itemName =
+            box.dataset.item;
+
+
+        const params =
+            new URLSearchParams({
+
+                destination: destination,
+
+                item_name: itemName,
+
+                category: "Food"
+
+            });
+
+
+        fetch(
+            "/api/review-stats?" +
+            params.toString()
+        )
+
+        .then(function (response) {
+
+            return response.json();
+
+        })
+
+        .then(function (data) {
+
+            if (!data.success) {
+
+                throw new Error(
+                    "Unable to load food rating."
+                );
+
+            }
+
+
+            const starsElement =
+                box.querySelector(
+                    ".food-review-stars"
+                );
+
+
+            const numberElement =
+                box.querySelector(
+                    ".food-review-number"
+                );
+
+
+            const countElement =
+                box.querySelector(
+                    ".food-review-count"
+                );
+
+
+            /* NO REVIEWS */
+
+            if (data.total_reviews === 0) {
+
+                starsElement.textContent =
+                    "☆☆☆☆☆";
+
+                starsElement.style.color =
+                    "#999";
+
+                numberElement.textContent =
+                    "";
+
+                countElement.textContent =
+                    "No reviews yet";
+
+                return;
+
+            }
+
+
+            /* CALCULATE RATING */
+
+            const rating =
+                Number(data.average_rating) || 0;
+
+
+            const roundedRating =
+                Math.round(rating);
+
+
+            const fullStars =
+                "★".repeat(
+                    roundedRating
+                );
+
+
+            const emptyStars =
+                "☆".repeat(
+                    5 - roundedRating
+                );
+
+
+            starsElement.textContent =
+                fullStars + emptyStars;
+
+
+            starsElement.style.color =
+                "#f59e0b";
+
+
+            numberElement.textContent =
+                rating.toFixed(1);
+
+
+            /* REVIEW COUNT */
+
+            countElement.textContent =
+                data.total_reviews === 1
+                ? "1 review"
+                : data.total_reviews + " reviews";
+
+        })
+
+
+        .catch(function (error) {
+
+            console.error(
+                "Food review loading error:",
+                error
+            );
+
+
+            const starsElement =
+                box.querySelector(
+                    ".food-review-stars"
+                );
+
+
+            const numberElement =
+                box.querySelector(
+                    ".food-review-number"
+                );
+
+
+            const countElement =
+                box.querySelector(
+                    ".food-review-count"
+                );
+
+
+            starsElement.textContent =
+                "☆☆☆☆☆";
+
+
+            starsElement.style.color =
+                "#999";
+
+
+            numberElement.textContent =
+                "";
+
+
+            countElement.textContent =
+                "Ratings unavailable";
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

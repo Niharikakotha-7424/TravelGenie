@@ -1,0 +1,1 @@
+# TravelGenie database models package

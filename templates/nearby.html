@@ -1,0 +1,627 @@
+{% extends "base.html" %}
+
+{% block title %}Nearby Places - TravelGenie{% endblock %}
+
+{% block content %}
+
+<style>
+    .nearby-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .nearby-hero {
+        background: linear-gradient(
+            135deg,
+            #667eea,
+            #764ba2
+        );
+        color: white;
+        padding: 45px 30px;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+
+    .nearby-hero h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+    }
+
+    .nearby-hero p {
+        margin: 0;
+        font-size: 17px;
+        opacity: 0.95;
+    }
+
+    .source-badge {
+        display: inline-block;
+        margin-top: 18px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.18);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .trip-info {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .info-card span {
+        display: block;
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+
+    .info-card strong {
+        font-size: 18px;
+        color: #222;
+    }
+
+    .places-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
+
+    .places-header h2 {
+        margin: 0;
+        color: #222;
+    }
+
+    .places-count {
+        background: #f1f3ff;
+        color: #4f46e5;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .places-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .place-card {
+        background: white;
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: transform 0.25s ease,
+                    box-shadow 0.25s ease;
+    }
+
+    .place-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.13);
+    }
+
+    .place-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 16px;
+        background: #f1f3ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+        margin-bottom: 15px;
+    }
+
+    .place-card h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        color: #222;
+    }
+
+    .category {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 15px;
+        background: #f4f4f5;
+        color: #555;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+
+    .coordinates {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 15px;
+    }
+
+    /* ==============================
+       13.6 REVIEW SECTION
+       ============================== */
+
+    .place-review-box {
+        margin: 10px 0 18px;
+        padding: 13px;
+        border-radius: 14px;
+        background: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+
+    .rating-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .rating-stars {
+        color: #f59e0b;
+        font-size: 19px;
+        letter-spacing: 1px;
+    }
+
+    .rating-number {
+        font-weight: 800;
+        color: #222;
+        font-size: 15px;
+    }
+
+    .review-count {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .no-rating {
+        color: #888;
+        font-size: 13px;
+    }
+
+    .view-reviews-btn {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #eef2ff;
+        color: #4f46e5;
+        padding: 10px 15px;
+        border-radius: 11px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+
+    .view-reviews-btn:hover {
+        background: #e0e7ff;
+    }
+
+    .directions-btn {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #4f46e5;
+        color: white;
+        padding: 11px 15px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .directions-btn:hover {
+        background: #3730a3;
+    }
+
+    .empty-state {
+        background: white;
+        padding: 45px 25px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .empty-state .emoji {
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    .empty-state h2 {
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #666;
+    }
+
+    .bottom-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 35px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .primary-action {
+        background: #4f46e5;
+        color: white;
+    }
+
+    .secondary-action {
+        background: #f1f3f5;
+        color: #333;
+    }
+
+    @media (max-width: 900px) {
+        .places-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .trip-info {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .nearby-container {
+            margin: 25px auto;
+            padding: 0 14px;
+        }
+
+        .nearby-hero {
+            padding: 35px 20px;
+        }
+
+        .nearby-hero h1 {
+            font-size: 27px;
+        }
+
+        .places-grid,
+        .trip-info {
+            grid-template-columns: 1fr;
+        }
+
+        .places-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+
+<div class="nearby-container">
+
+    <!-- HERO -->
+    <section class="nearby-hero">
+
+        <h1>📍 Nearby Places</h1>
+
+        <p>
+            Discover attractions, viewpoints, museums,
+            historic places and hidden gems around
+            {{ trip.destination }}.
+        </p>
+
+        <div class="source-badge">
+            {% if demo_data %}
+                ⚠️ Demo Data
+            {% else %}
+                🌐 {{ data_source }}
+            {% endif %}
+        </div>
+
+    </section>
+
+
+    <!-- TRIP INFORMATION -->
+    <section class="trip-info">
+
+        <div class="info-card">
+            <span>📍 Destination</span>
+            <strong>{{ trip.destination }}</strong>
+        </div>
+
+        <div class="info-card">
+            <span>📅 Trip Duration</span>
+            <strong>{{ trip.days }} Days</strong>
+        </div>
+
+        <div class="info-card">
+            <span>👥 Travelers</span>
+            <strong>{{ trip.travelers }}</strong>
+        </div>
+
+    </section>
+
+
+    <!-- PLACES HEADER -->
+    <div class="places-header">
+
+        <h2>✨ Places to Explore</h2>
+
+        <div class="places-count">
+            {{ places|length }} Places Found
+        </div>
+
+    </div>
+
+
+    {% if places %}
+
+    <div class="places-grid">
+
+        {% for place in places %}
+
+        <article class="place-card">
+
+            <!-- PLACE ICON -->
+            <div class="place-icon">
+
+                {% if place.category == "Viewpoint" %}
+                    👀
+                {% elif place.category == "Museum" %}
+                    🏛️
+                {% elif place.category == "Historic" %}
+                    🏰
+                {% elif place.category == "Waterfall" %}
+                    💦
+                {% elif place.category == "Nature" %}
+                    🌿
+                {% elif place.category == "Park" %}
+                    🌳
+                {% elif place.category == "Attraction" %}
+                    ⭐
+                {% else %}
+                    💎
+                {% endif %}
+
+            </div>
+
+
+            <!-- PLACE NAME -->
+            <h3>
+                {{ place.name }}
+            </h3>
+
+
+            <!-- CATEGORY -->
+            <span class="category">
+                {{ place.category }}
+            </span>
+
+
+            <!-- COORDINATES -->
+            <div class="coordinates">
+
+                📍
+                {{ "%.5f"|format(place.lat) }},
+                {{ "%.5f"|format(place.lon) }}
+
+            </div>
+
+
+            <!-- =========================================
+                 13.6 — PLACE RATING & REVIEW DISPLAY
+                 ========================================= -->
+
+            <div
+                class="place-review-box"
+                data-destination="{{ trip.destination }}"
+                data-item="{{ place.name }}"
+            >
+
+                <div class="rating-row">
+
+                    <span class="rating-stars">
+                        ☆☆☆☆☆
+                    </span>
+
+                    <span class="rating-number">
+                        -
+                    </span>
+
+                    <span class="review-count">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- VIEW REVIEWS -->
+            <a
+                href="{{ url_for('reviews_page') }}?destination={{ trip.destination|urlencode }}&item_name={{ place.name|urlencode }}&category=Place"
+                class="view-reviews-btn"
+            >
+                ⭐ View Reviews
+            </a>
+
+
+            <!-- DIRECTIONS -->
+            <a
+                href="https://www.google.com/maps/dir/?api=1&destination={{ place.lat }},{{ place.lon }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="directions-btn"
+            >
+                🧭 Get Directions
+            </a>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+
+        <div class="emoji">🔍</div>
+
+        <h2>No Nearby Places Found</h2>
+
+        <p>
+            We couldn't find nearby places for this destination
+            right now. Please try again later.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- BOTTOM ACTIONS -->
+    <div class="bottom-actions">
+
+        <a
+            href="{{ url_for('result') }}"
+            class="action-btn secondary-action"
+        >
+            ← Back to Trip
+        </a>
+
+        <a
+            href="{{ url_for('map_view') }}"
+            class="action-btn primary-action"
+        >
+            🗺️ Open Smart Map
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     13.6 — LOAD RATINGS FROM REVIEW API
+     ========================================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const reviewBoxes = document.querySelectorAll(".place-review-box");
+
+    reviewBoxes.forEach(function (box) {
+
+        const destination = box.dataset.destination;
+        const itemName = box.dataset.item;
+
+        const params = new URLSearchParams({
+            destination: destination,
+            item_name: itemName,
+            category: "Place"
+        });
+
+        fetch("/api/review-stats?" + params.toString())
+            .then(response => response.json())
+            .then(data => {
+
+                if (!data.success) {
+                    throw new Error("Unable to load rating.");
+                }
+
+                const starsElement =
+                    box.querySelector(".rating-stars");
+
+                const numberElement =
+                    box.querySelector(".rating-number");
+
+                const countElement =
+                    box.querySelector(".review-count");
+
+
+                if (data.total_reviews === 0) {
+
+                    starsElement.textContent = "☆☆☆☆☆";
+
+                    numberElement.textContent = "";
+
+                    countElement.textContent = "No reviews yet";
+
+                    starsElement.style.color = "#999";
+
+                    return;
+                }
+
+
+                const rating =
+                    Number(data.average_rating) || 0;
+
+                const roundedRating =
+                    Math.round(rating);
+
+
+                const fullStars =
+                    "★".repeat(roundedRating);
+
+                const emptyStars =
+                    "☆".repeat(5 - roundedRating);
+
+
+                starsElement.textContent =
+                    fullStars + emptyStars;
+
+                starsElement.style.color = "#f59e0b";
+
+                numberElement.textContent =
+                    rating.toFixed(1);
+
+                countElement.textContent =
+                    data.total_reviews === 1
+                    ? "1 review"
+                    : data.total_reviews + " reviews";
+
+            })
+            .catch(error => {
+
+                console.error(
+                    "Review loading error:",
+                    error
+                );
+
+                const starsElement =
+                    box.querySelector(".rating-stars");
+
+                const numberElement =
+                    box.querySelector(".rating-number");
+
+                const countElement =
+                    box.querySelector(".review-count");
+
+
+                starsElement.textContent = "☆☆☆☆☆";
+
+                starsElement.style.color = "#999";
+
+                numberElement.textContent = "";
+
+                countElement.textContent =
+                    "Ratings unavailable";
+
+            });
+
+    });
+
+});
+</script>
+
+{% endblock %}

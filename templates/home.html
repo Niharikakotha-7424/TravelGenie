@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}
+TravelGenie | Plan Less. Travel More.
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            ✨ AI-Powered Travel Planning
+        </div>
+
+        <h1>
+            Plan Less.
+            <span>Travel More.</span>
+        </h1>
+
+        <p>
+            TravelGenie creates personalized,
+            budget-friendly travel plans by combining
+            itineraries, maps, stays, food and local
+            experiences in one platform.
+        </p>
+
+        <div class="hero-actions">
+
+            <a
+                href="{{ url_for('planner') }}"
+                class="primary-btn"
+            >
+                🤖 Plan My Trip
+            </a>
+
+            {% if not user %}
+
+            <a
+                href="{{ url_for('register') }}"
+                class="secondary-btn"
+            >
+                Create Account
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="features">
+
+    <div class="section-heading">
+
+        <span>
+            SMART TRAVEL
+        </span>
+
+        <h2>
+            Everything you need for your journey
+        </h2>
+
+    </div>
+
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>AI Planner</h3>
+            <p>
+                Generate personalized day-wise itineraries.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Budget Optimizer</h3>
+            <p>
+                Find ways to keep your trip within budget.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🗺️</div>
+            <h3>Smart Maps</h3>
+            <p>
+                Explore attractions and locations visually.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🏨</div>
+            <h3>Stays</h3>
+            <p>
+                Compare budget, comfort and premium options.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">🍴</div>
+            <h3>Local Food</h3>
+            <p>
+                Discover destination-specific food experiences.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">👨‍🏫</div>
+            <h3>Local Guides</h3>
+            <p>
+                Discover guide categories and experiences.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="destinations">
+
+    <div class="section-heading">
+
+        <span>
+            EXPLORE
+        </span>
+
+        <h2>
+            Popular destinations
+        </h2>
+
+    </div>
+
+
+    <div class="destination-grid">
+
+        {% for destination in destinations %}
+
+        <div class="destination-card">
+
+            <div class="destination-icon">
+                📍
+            </div>
+
+            <h3>
+                {{ destination.name }}
+            </h3>
+
+            <p>
+                {{ destination.state }}
+            </p>
+
+            <a
+                href="{{ url_for('planner') }}"
+                class="text-btn"
+            >
+                Plan trip →
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

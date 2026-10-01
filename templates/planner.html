@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}
+Smart Trip Planner
+{% endblock %}
+
+{% block content %}
+
+<section class="planner-page">
+
+    <div class="planner-header">
+
+        <div class="badge">
+            🤖 SMART AI PLANNER
+        </div>
+
+        <h1>
+            Build Your Perfect Trip
+        </h1>
+
+        <p>
+            Tell TravelGenie what you want.
+            We'll organize your journey.
+        </p>
+
+    </div>
+
+
+    <form
+        method="POST"
+        class="planner-form"
+        id="plannerForm"
+    >
+
+        <div class="step">
+
+            <h2>01. Where are you going?</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Starting Location
+                    </label>
+
+                    <input
+                        type="text"
+                        name="start_location"
+                        placeholder="Example: Kakinada"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Destination
+                    </label>
+
+                    <input
+                        type="text"
+                        name="destination"
+                        list="destinationList"
+                        placeholder="Example: Visakhapatnam"
+                        required
+                    >
+
+                    <datalist id="destinationList">
+
+                        <option value="Visakhapatnam">
+                        <option value="Hyderabad">
+                        <option value="Goa">
+                        <option value="Araku Valley">
+                        <option value="Jaipur">
+
+                    </datalist>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="step">
+
+            <h2>02. Trip Details</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Number of Days
+                    </label>
+
+                    <input
+                        type="number"
+                        name="days"
+                        min="1"
+                        max="30"
+                        value="2"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Travelers
+                    </label>
+
+                    <input
+                        type="number"
+                        name="travelers"
+                        min="1"
+                        max="50"
+                        value="2"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Total Budget ₹
+                    </label>
+
+                    <input
+                        type="number"
+                        name="budget"
+                        min="500"
+                        value="5000"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Travel Purpose
+                    </label>
+
+                    <select name="purpose">
+
+                        <option>Relaxation</option>
+                        <option>Adventure</option>
+                        <option>Business</option>
+                        <option>Spiritual</option>
+                        <option>Family</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="step">
+
+            <h2>03. Your Preferences</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Interests
+                    </label>
+
+                    <input
+                        type="text"
+                        name="interests"
+                        placeholder="Nature, Food, Culture"
+                    >
+
+                    <small>
+                        Separate multiple interests with commas.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Activity Level
+                    </label>
+
+                    <select name="activity_level">
+
+                        <option>Low</option>
+                        <option selected>Medium</option>
+                        <option>High</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Transport
+                    </label>
+
+                    <select name="transport">
+
+                        <option>Bus</option>
+                        <option>Train</option>
+                        <option>Flight</option>
+                        <option>Cab</option>
+                        <option>Local</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Accommodation
+                    </label>
+
+                    <select name="accommodation">
+
+                        <option>Hostel</option>
+                        <option>Homestay</option>
+                        <option>Hotel</option>
+                        <option>Lockers</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Food Preference
+                    </label>
+
+                    <select name="food">
+
+                        <option>Veg</option>
+                        <option>Non-Veg</option>
+                        <option>Both</option>
+                        <option>Local</option>
+                        <option>Street</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Language
+                    </label>
+
+                    <select name="language">
+
+                        <option>English</option>
+                        <option>Telugu</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="step">
+
+            <h2>04. Special Requirements</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Accessibility
+                    </label>
+
+                    <select name="accessibility">
+
+                        <option>None</option>
+                        <option>Wheelchair Friendly</option>
+                        <option>Low Walking</option>
+                        <option>Senior Friendly</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Special Preference
+                    </label>
+
+                    <input
+                        type="text"
+                        name="special_preference"
+                        placeholder="Example: Sunrise photography"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="generate-btn"
+        >
+            ✨ Generate My Smart Trip
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

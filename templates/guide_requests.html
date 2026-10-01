@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Guide Requests - TravelGenie</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #eef7ff,
+                #f8fbff
+            );
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            width: 100%;
+            padding: 18px 6%;
+            background: white;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow:
+                0 3px 15px rgba(0,0,0,0.08);
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logo span {
+            color: #14b8a6;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+
+        /* =========================
+           PAGE HEADER
+        ========================= */
+
+        .page-header {
+            text-align: center;
+            padding: 50px 20px 30px;
+        }
+
+        .page-icon {
+            font-size: 52px;
+            margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 38px;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 span {
+            color: #2563eb;
+        }
+
+        .page-header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: auto;
+            padding-bottom: 60px;
+        }
+
+
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    3,
+                    1fr
+                );
+
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+
+            text-align: center;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.07);
+
+            border: 1px solid #e5e7eb;
+        }
+
+        .summary-card .icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card h2 {
+            font-size: 28px;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+
+        .summary-card p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           REQUEST CARD
+        ========================= */
+
+        .request-card {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.08);
+
+            border: 1px solid #e5e7eb;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .request-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 5px;
+
+            background: linear-gradient(
+                90deg,
+                #2563eb,
+                #14b8a6
+            );
+        }
+
+
+        /* =========================
+           REQUEST HEADER
+        ========================= */
+
+        .request-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+        }
+
+        .request-title {
+            font-size: 21px;
+
+            font-weight: bold;
+
+            color: #111827;
+        }
+
+        .request-id {
+            color: #6b7280;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           DETAILS GRID
+        ========================= */
+
+        .details-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    1fr
+                );
+
+            gap: 15px;
+
+            margin-bottom: 22px;
+        }
+
+        .detail {
+            padding: 13px 15px;
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            display: block;
+
+            font-size: 12px;
+
+            color: #6b7280;
+
+            margin-bottom: 5px;
+
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: #111827;
+
+            font-size: 14px;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message-box {
+            padding: 15px;
+
+            background: #f0fdfa;
+
+            border-radius: 12px;
+
+            margin-bottom: 22px;
+
+            color: #374151;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+        .message-box strong {
+            color: #0f766e;
+        }
+
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        .update-form {
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+        }
+
+        .status-select {
+            padding: 10px 13px;
+
+            border-radius: 9px;
+
+            border: 1px solid #d1d5db;
+
+            background: white;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        .status-select:focus {
+            border-color: #2563eb;
+        }
+
+        .update-btn {
+            border: none;
+
+            padding: 10px 17px;
+
+            border-radius: 9px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .update-btn:hover {
+            background: #1d4ed8;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 11px 18px;
+
+            border-radius: 10px;
+
+            background: #eef2ff;
+
+            color: #3730a3;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e0e7ff;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-box {
+            background: white;
+
+            border-radius: 20px;
+
+            padding: 55px 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.07);
+        }
+
+        .empty-icon {
+            font-size: 55px;
+
+            margin-bottom: 15px;
+        }
+
+        .empty-box h2 {
+            margin-bottom: 10px;
+
+            color: #111827;
+        }
+
+        .empty-box p {
+            color: #6b7280;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            background: white;
+
+            color: #6b7280;
+
+            border-top:
+                1px solid #e5e7eb;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .request-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+            .actions {
+                align-items: stretch;
+
+                flex-direction: column;
+            }
+
+            .update-form {
+                width: 100%;
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .status-select,
+            .update-btn {
+                width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 30px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Travel<span>Genie</span>
+        </div>
+
+
+        {% if user %}
+
+            <div class="user-name">
+                👋 {{ user.full_name or user.username }}
+            </div>
+
+        {% endif %}
+
+    </nav>
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <section class="page-header">
+
+        <div class="page-icon">
+            🧭
+        </div>
+
+        <h1>
+            Guide <span>Requests</span>
+        </h1>
+
+        <p>
+            Manage traveler requests for local guides.
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="container">
+
+
+        <!-- =========================
+             SUMMARY
+        ========================= -->
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <div class="icon">
+                    📋
+                </div>
+
+                <h2>
+                    {{ requests_list|length }}
+                </h2>
+
+                <p>
+                    Total Requests
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="icon">
+                    ⏳
+                </div>
+
+                <h2>
+
+                    {{
+                        requests_list
+                        |selectattr("status", "equalto", "Pending")
+                        |list
+                        |length
+                    }}
+
+                </h2>
+
+                <p>
+                    Pending
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="icon">
+                    ✅
+                </div>
+
+                <h2>
+
+                    {{
+                        requests_list
+                        |selectattr("status", "equalto", "Confirmed")
+                        |list
+                        |length
+                    }}
+
+                </h2>
+
+                <p>
+                    Confirmed
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             REQUEST LIST
+        ========================= -->
+
+        {% if requests_list %}
+
+
+            {% for guide_request in requests_list %}
+
+                <div class="request-card">
+
+
+                    <!-- REQUEST HEADER -->
+
+                    <div class="request-header">
+
+                        <div>
+
+                            <div class="request-title">
+
+                                🧭
+                                {{ guide_request.guide_name }}
+
+                            </div>
+
+                            <div class="request-id">
+
+                                Request #{{ guide_request.id }}
+
+                            </div>
+
+                        </div>
+
+
+                        {% if guide_request.status == "Confirmed" %}
+
+                            <span class="status status-confirmed">
+                                ✓ Confirmed
+                            </span>
+
+                        {% elif guide_request.status == "Rejected" %}
+
+                            <span class="status status-rejected">
+                                ✕ Rejected
+                            </span>
+
+                        {% else %}
+
+                            <span class="status status-pending">
+                                ⏳ Pending
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- DETAILS -->
+
+                    <div class="details-grid">
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Traveler
+                            </span>
+
+                            <span class="detail-value">
+                                {{ guide_request.traveler_name }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Destination
+                            </span>
+
+                            <span class="detail-value">
+                                📍 {{ guide_request.destination }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Email
+                            </span>
+
+                            <span class="detail-value">
+                                {{ guide_request.traveler_email }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Mobile
+                            </span>
+
+                            <span class="detail-value">
+
+                                {% if guide_request.traveler_mobile %}
+
+                                    {{ guide_request.traveler_mobile }}
+
+                                {% else %}
+
+                                    Not provided
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Preferred Date
+                            </span>
+
+                            <span class="detail-value">
+                                📅 {{ guide_request.preferred_date }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Preferred Time
+                            </span>
+
+                            <span class="detail-value">
+                                🕐 {{ guide_request.preferred_time }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Language
+                            </span>
+
+                            <span class="detail-value">
+                                🗣️ {{ guide_request.language }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            <span class="detail-label">
+                                Number of Travelers
+                            </span>
+
+                            <span class="detail-value">
+                                👥 {{ guide_request.travelers }}
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    {% if guide_request.message %}
+
+                        <div class="message-box">
+
+                            <strong>
+                                💬 Traveler Message:
+                            </strong>
+
+                            <br>
+
+                            {{ guide_request.message }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="actions">
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'update_guide_request_status',
+                                request_id=guide_request.id
+                            ) }}"
+                            class="update-form"
+                        >
+
+                            <select
+                                name="status"
+                                class="status-select"
+                            >
+
+                                <option
+                                    value="Pending"
+                                    {% if guide_request.status == "Pending" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    ⏳ Pending
+                                </option>
+
+                                <option
+                                    value="Confirmed"
+                                    {% if guide_request.status == "Confirmed" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    ✅ Confirmed
+                                </option>
+
+                                <option
+                                    value="Rejected"
+                                    {% if guide_request.status == "Rejected" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    ❌ Rejected
+                                </option>
+
+                            </select>
+
+
+                            <button
+                                type="submit"
+                                class="update-btn"
+                            >
+                                Update Status
+                            </button>
+
+                        </form>
+
+
+                        <a
+                            href="{{ url_for('guides') }}"
+                            class="back-btn"
+                        >
+                            ← Back to Guides
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+
+            <div class="empty-box">
+
+                <div class="empty-icon">
+                    📭
+                </div>
+
+                <h2>
+                    No Guide Requests Yet
+                </h2>
+
+                <p>
+                    Submitted guide requests will appear here.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        <p>
+            © 2026 TravelGenie ·
+            Your AI-powered smart travel companion 🌍
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

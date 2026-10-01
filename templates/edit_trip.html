@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Trip - TravelGenie</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef7ff, #f7f2ff);
+            color: #222;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.96);
+            padding: 16px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #2563eb;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1050px;
+            margin: 35px auto 60px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            color: #172554;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .flash.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .flash.danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .flash.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .flash.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 21px;
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 13px;
+            font-size: 15px;
+            background: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .interest-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .interest-item {
+            position: relative;
+        }
+
+        .interest-item input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .interest-item label {
+            display: block;
+            border: 1px solid #cbd5e1;
+            padding: 11px 10px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            background: #f8fafc;
+            transition: 0.2s;
+        }
+
+        .interest-item input:checked + label {
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+
+        .interest-item label:hover {
+            border-color: #60a5fa;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 11px;
+            padding: 13px 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 750px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .interest-box {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            .interest-box {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 14px 5%;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .container {
+                width: 94%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="{{ url_for('trips') }}" class="logo">
+            ✈️ TravelGenie
+        </a>
+
+        <a href="{{ url_for('trips') }}" class="back-link">
+            ← Back to My Trips
+        </a>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+        <div class="header">
+
+            <h1>✏️ Edit Your Trip</h1>
+
+            <p>
+                Update your trip details and preferences.
+            </p>
+
+        </div>
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div class="flash {{ category }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- FORM -->
+
+        <div class="form-card">
+
+            <form
+                method="POST"
+                action="{{ url_for('edit_trip', trip_id=trip_record.id) }}"
+            >
+
+
+                <!-- BASIC DETAILS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        📍 Basic Trip Details
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="field">
+
+                            <label for="start_location">
+                                Starting Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="start_location"
+                                name="start_location"
+                                value="{{ trip.get('start_location', '') }}"
+                                placeholder="Example: Kakinada"
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="destination">
+                                Destination *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="destination"
+                                name="destination"
+                                value="{{ trip.get('destination', '') }}"
+                                placeholder="Example: Visakhapatnam"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="days">
+                                Trip Duration (Days) *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="days"
+                                name="days"
+                                min="1"
+                                max="30"
+                                value="{{ trip.get('days', 1) }}"
+                                required
+                            >
+
+                            <div class="hint">
+                                Maximum 30 days
+                            </div>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="travelers">
+                                Number of Travelers *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="travelers"
+                                name="travelers"
+                                min="1"
+                                max="50"
+                                value="{{ trip.get('travelers', 1) }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="budget">
+                                Budget (₹) *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="budget"
+                                name="budget"
+                                min="0"
+                                step="100"
+                                value="{{ trip.get('budget', 0) }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PURPOSE -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        🎯 Trip Purpose
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="field">
+
+                            <label for="purpose">
+                                Purpose
+                            </label>
+
+                            {% set current_purpose = trip.get('purpose', 'Relaxation') %}
+
+                            <select
+                                id="purpose"
+                                name="purpose"
+                            >
+
+                                {% for option in [
+                                    'Relaxation',
+                                    'Adventure',
+                                    'Business',
+                                    'Spiritual',
+                                    'Family',
+                                    'Romantic',
+                                    'Educational'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_purpose == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INTERESTS -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        ❤️ Your Interests
+                    </div>
+
+                    {% set selected_interests = trip.get('interests', []) %}
+
+                    <div class="interest-box">
+
+                        {% for interest in [
+                            'Nature',
+                            'Beaches',
+                            'Food',
+                            'Adventure',
+                            'Culture',
+                            'Shopping',
+                            'History',
+                            'Photography',
+                            'Wildlife'
+                        ] %}
+
+                            <div class="interest-item">
+
+                                <input
+                                    type="checkbox"
+                                    id="interest_{{ loop.index }}"
+                                    name="interests"
+                                    value="{{ interest }}"
+                                    {% if interest in selected_interests %}
+                                        checked
+                                    {% endif %}
+                                >
+
+                                <label for="interest_{{ loop.index }}">
+                                    {{ interest }}
+                                </label>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="hint">
+                        Select the interests you want TravelGenie
+                        to consider.
+                    </div>
+
+                </div>
+
+
+                <!-- TRANSPORT AND STAY -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        🚌 Transport & Stay
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="field">
+
+                            <label for="transport">
+                                Transport
+                            </label>
+
+                            {% set current_transport = trip.get('transport', 'Bus') %}
+
+                            <select
+                                id="transport"
+                                name="transport"
+                            >
+
+                                {% for option in [
+                                    'Bus',
+                                    'Train',
+                                    'Flight',
+                                    'Cab',
+                                    'Local Transport'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_transport == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="accommodation">
+                                Accommodation
+                            </label>
+
+                            {% set current_accommodation = trip.get('accommodation', 'Hostel') %}
+
+                            <select
+                                id="accommodation"
+                                name="accommodation"
+                            >
+
+                                {% for option in [
+                                    'Hotel',
+                                    'Hostel',
+                                    'Homestay',
+                                    'Guest House'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_accommodation == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FOOD AND ACTIVITY -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        🍴 Food & Activity
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="field">
+
+                            <label for="food">
+                                Food Preference
+                            </label>
+
+                            {% set current_food = trip.get('food', 'Both') %}
+
+                            <select
+                                id="food"
+                                name="food"
+                            >
+
+                                {% for option in [
+                                    'Veg',
+                                    'Non-Veg',
+                                    'Both',
+                                    'Local',
+                                    'Street Food'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_food == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="activity_level">
+                                Activity Level
+                            </label>
+
+                            {% set current_activity = trip.get('activity_level', 'Medium') %}
+
+                            <select
+                                id="activity_level"
+                                name="activity_level"
+                            >
+
+                                {% for option in [
+                                    'Low',
+                                    'Medium',
+                                    'High'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_activity == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LANGUAGE AND ACCESSIBILITY -->
+
+                <div class="section">
+
+                    <div class="section-title">
+                        🌐 Language & Accessibility
+                    </div>
+
+                    <div class="grid">
+
+                        <div class="field">
+
+                            <label for="language">
+                                Preferred Language
+                            </label>
+
+                            {% set current_language = trip.get('language', 'English') %}
+
+                            <select
+                                id="language"
+                                name="language"
+                            >
+
+                                {% for option in [
+                                    'English',
+                                    'Telugu'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_language == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="accessibility">
+                                Accessibility Requirement
+                            </label>
+
+                            {% set current_accessibility = trip.get('accessibility', 'None') %}
+
+                            <select
+                                id="accessibility"
+                                name="accessibility"
+                            >
+
+                                {% for option in [
+                                    'None',
+                                    'Wheelchair Friendly',
+                                    'Elderly Friendly',
+                                    'Family Friendly'
+                                ] %}
+
+                                    <option
+                                        value="{{ option }}"
+                                        {% if current_accessibility == option %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ option }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field full">
+
+                            <label for="special_preference">
+                                Special Preferences
+                            </label>
+
+                            <textarea
+                                id="special_preference"
+                                name="special_preference"
+                                placeholder="Example: Avoid crowded places, prefer morning activities..."
+                            >{{ trip.get('special_preference', '') }}</textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="actions">
+
+                    <a
+                        href="{{ url_for('view_trip', trip_id=trip_record.id) }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        💾 Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

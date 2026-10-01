@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="TravelGenie - Your AI-powered smart travel companion"
+    >
+
+    <title>
+        {% block title %}
+        TravelGenie
+        {% endblock %}
+    </title>
+
+
+    <!-- =========================
+         GOOGLE FONT
+    ========================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =========================
+         LEAFLET CSS
+    ========================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <!-- =========================
+         MAIN CSS
+    ========================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =========================
+         BASE PAGE UI STYLES
+    ========================== -->
+
+    <style>
+
+        /* =========================================
+           GLOBAL
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+            background: #f7faff;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 10000;
+
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 14px 5%;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border-bottom: 1px solid rgba(20, 40, 80, 0.08);
+
+            box-shadow:
+                0 4px 20px rgba(20, 40, 80, 0.06);
+
+            backdrop-filter: blur(12px);
+
+            transition: all 0.3s ease;
+        }
+
+
+        /* =========================================
+           LOGO
+        ========================================= */
+
+        .logo {
+            flex-shrink: 0;
+
+            text-decoration: none;
+
+            font-family: "Poppins", sans-serif;
+
+            font-size: 24px;
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+
+            color: #172033;
+
+            transition:
+                transform 0.25s ease,
+                opacity 0.25s ease;
+        }
+
+        .logo span {
+            color: #1687ff;
+        }
+
+        .logo:hover {
+            transform: translateY(-1px);
+            opacity: 0.88;
+        }
+
+
+        /* =========================================
+           NAV LINKS
+        ========================================= */
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 6px;
+
+            flex: 1;
+        }
+
+        .nav-links a {
+            position: relative;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 9px 12px;
+
+            border-radius: 10px;
+
+            color: #465269;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition:
+                color 0.25s ease,
+                background 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .nav-links a:hover {
+            color: #1687ff;
+            background: #eef7ff;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================
+           USER AREA
+        ========================================= */
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================================
+           PROFILE PILL
+        ========================================= */
+
+        .profile-pill {
+            display: inline-flex;
+            align-items: center;
+
+            max-width: 190px;
+
+            padding: 9px 13px;
+
+            border-radius: 12px;
+
+            background: #f1f7ff;
+
+            border: 1px solid #dcecff;
+
+            color: #24415f;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            transition: all 0.25s ease;
+        }
+
+        .profile-pill:hover {
+            background: #e7f2ff;
+            border-color: #bddcff;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================
+           LOGIN BUTTON
+        ========================================= */
+
+        .login-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 9px 15px;
+
+            border-radius: 10px;
+
+            color: #1687ff;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition: all 0.25s ease;
+        }
+
+        .login-btn:hover {
+            background: #eef7ff;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================
+           LOGOUT BUTTON
+        ========================================= */
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 9px 14px;
+
+            border-radius: 10px;
+
+            background: #fff3f3;
+
+            color: #d64545;
+
+            border: 1px solid #ffdede;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            transition: all 0.25s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ffe7e7;
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================
+           PRIMARY BUTTON
+        ========================================= */
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 11px 18px;
+
+            border-radius: 11px;
+
+            background: linear-gradient(
+                135deg,
+                #1687ff,
+                #5b7cff
+            );
+
+            color: white !important;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            border: none;
+
+            box-shadow:
+                0 6px 16px rgba(22, 135, 255, 0.22);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 22px rgba(22, 135, 255, 0.28);
+        }
+
+        .primary-btn.small {
+            padding: 9px 15px;
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           MAIN CONTENT
+        ========================================= */
+
+        main {
+            min-height: calc(100vh - 150px);
+            animation: pageFadeIn 0.45s ease;
+        }
+
+        @keyframes pageFadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =========================================
+           FLASH MESSAGES
+        ========================================= */
+
+        .flash-container {
+            position: fixed;
+
+            top: 85px;
+            right: 24px;
+
+            z-index: 20000;
+
+            width: min(390px, calc(100vw - 30px));
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            pointer-events: none;
+        }
+
+        .flash {
+            pointer-events: auto;
+
+            padding: 14px 16px;
+
+            border-radius: 12px;
+
+            background: white;
+
+            border: 1px solid #e4eaf2;
+
+            box-shadow:
+                0 10px 30px rgba(20, 40, 80, 0.12);
+
+            font-size: 14px;
+            font-weight: 600;
+
+            animation:
+                flashIn 0.35s ease;
+        }
+
+        .flash.success {
+            border-left: 4px solid #22a06b;
+        }
+
+        .flash.error {
+            border-left: 4px solid #e05252;
+        }
+
+        .flash.warning {
+            border-left: 4px solid #e6a23c;
+        }
+
+        .flash.info {
+            border-left: 4px solid #1687ff;
+        }
+
+        @keyframes flashIn {
+
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        footer {
+            margin-top: 50px;
+
+            padding: 30px 5%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            background: #111827;
+
+            color: #dce4ef;
+
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        footer strong {
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-family: "Poppins", sans-serif;
+
+            font-size: 18px;
+
+            color: white;
+        }
+
+        footer p {
+            margin: 0;
+
+            color: #aeb9c9;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================
+           LEAFLET FIX
+        ========================================= */
+
+        .leaflet-container {
+            font-family: "Inter", sans-serif;
+        }
+
+
+        /* =========================================
+           RESPONSIVE NAVBAR
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .navbar {
+                padding-left: 3%;
+                padding-right: 3%;
+            }
+
+            .nav-links {
+                gap: 2px;
+            }
+
+            .nav-links a {
+                padding: 8px 8px;
+                font-size: 13px;
+            }
+
+            .profile-pill {
+                max-width: 140px;
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .navbar {
+                flex-wrap: wrap;
+
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .nav-links {
+                order: 3;
+
+                width: 100%;
+
+                overflow-x: auto;
+
+                justify-content: flex-start;
+
+                padding-bottom: 2px;
+
+                scrollbar-width: thin;
+            }
+
+            .nav-links a {
+                flex-shrink: 0;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                gap: 10px;
+                padding: 11px 4%;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .nav-user {
+                margin-left: auto;
+            }
+
+            .profile-pill {
+                max-width: 115px;
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .logout-btn,
+            .login-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .primary-btn.small {
+                padding: 8px 11px;
+                font-size: 12px;
+            }
+
+            .nav-links {
+                gap: 3px;
+            }
+
+            .nav-links a {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+
+                padding: 25px 5%;
+            }
+
+            .flash-container {
+                top: 105px;
+                right: 15px;
+            }
+
+        }
+
+
+        /* =========================================
+           ACCESSIBILITY
+        ========================================= */
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid rgba(22, 135, 255, 0.35);
+            outline-offset: 2px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<nav class="navbar">
+
+
+    <!-- =========================
+         LOGO
+    ========================== -->
+
+    <a
+        href="{{ url_for('home') }}"
+        class="logo"
+        aria-label="TravelGenie Home"
+    >
+        ✈️ Travel<span>Genie</span>
+    </a>
+
+
+    <!-- =========================
+         NAVIGATION LINKS
+    ========================== -->
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('home') }}">
+            🏠 Home
+        </a>
+
+        <a href="{{ url_for('planner') }}">
+            🤖 AI Planner
+        </a>
+
+
+        {% if user %}
+
+        <a href="{{ url_for('trips') }}">
+            🧳 My Trips
+        </a>
+
+        <a href="{{ url_for('dashboard') }}">
+            📊 Dashboard
+        </a>
+
+        <a href="{{ url_for('guide_requests') }}">
+            🧭 Guide Requests
+        </a>
+
+        {% endif %}
+
+
+        <a href="{{ url_for('about') }}">
+            ℹ️ About
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         USER SECTION
+    ========================== -->
+
+    <div class="nav-user">
+
+        {% if user %}
+
+        <a
+            href="{{ url_for('profile') }}"
+            class="profile-pill"
+            title="Open Profile"
+        >
+            👤 {{ user.full_name }}
+        </a>
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="logout-btn"
+        >
+            Logout
+        </a>
+
+        {% else %}
+
+        <a
+            href="{{ url_for('login') }}"
+            class="login-btn"
+        >
+            Login
+        </a>
+
+        <a
+            href="{{ url_for('register') }}"
+            class="primary-btn small"
+        >
+            Get Started
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     FLASH MESSAGES
+====================================================== -->
+
+{% with messages = get_flashed_messages(
+    with_categories=true
+) %}
+
+    {% if messages %}
+
+        <div
+            class="flash-container"
+            aria-live="polite"
+        >
+
+            {% for category, message in messages %}
+
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+<!-- =====================================================
+     MAIN CONTENT
+====================================================== -->
+
+<main>
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer>
+
+    <div>
+
+        <strong>
+            ✈️ TravelGenie
+        </strong>
+
+        <p>
+            Your AI-powered smart travel companion.
+        </p>
+
+    </div>
+
+
+    <div>
+
+<div>
+
+    <p>
+        © 2026 TravelGenie. All rights reserved.
+    </p>
+
+</div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     LEAFLET JS
+====================================================== -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<!-- =====================================================
+     EXISTING PROJECT SCRIPTS
+====================================================== -->
+
+<script
+    src="{{ url_for('static', filename='js/planner.js') }}">
+</script>
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}">
+</script>
+
+
+<!-- =====================================================
+     PAGE-SPECIFIC SCRIPTS
+====================================================== -->
+
+{% block scripts %}
+{% endblock %}
+
+
+</body>
+
+</html>

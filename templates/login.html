@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <div class="auth-logo">
+            ✈️
+        </div>
+
+        <h1>
+            Welcome Back
+        </h1>
+
+        <p>
+            Login to continue planning smarter trips.
+        </p>
+
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label>
+                    Username or Email
+                </label>
+
+                <input
+                    type="text"
+                    name="identity"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="generate-btn"
+            >
+                Login
+            </button>
+
+        </form>
+
+
+        <div class="divider">
+            OR
+        </div>
+
+
+        <button
+            class="google-btn"
+            onclick="alert('Google OAuth can be connected later.')"
+        >
+            🔵 Continue with Google
+        </button>
+
+
+        <p class="auth-footer">
+
+            Don't have an account?
+
+            <a href="{{ url_for('register') }}">
+                Create Account
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,2024 @@
+{% extends "base.html" %}
+
+{% block title %}
+Your Smart Trip
+{% endblock %}
+
+{% block content %}
+
+<section class="result-page">
+
+    <!-- HEADER -->
+
+    <div class="result-header">
+
+        <div>
+
+            <span class="badge">
+
+                {% if trip.demo_data %}
+                    DEMO DATA
+                {% else %}
+                    SMART TRIP
+                {% endif %}
+
+            </span>
+
+            <h1>
+                {{ trip.destination }}
+            </h1>
+
+            <p>
+                {{ trip.description }}
+            </p>
+
+        </div>
+
+        <div class="trip-summary">
+
+            <strong>
+                ₹{{ "%.0f"|format(trip.budget) }}
+            </strong>
+
+            <span>
+                Your Budget
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK STATS -->
+
+    <div class="quick-stats">
+
+        <div>
+
+            <strong>
+                {{ trip.days }}
+            </strong>
+
+            <span>
+                Days
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ trip.travelers }}
+            </strong>
+
+            <span>
+                Travelers
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                ₹{{ "%.0f"|format(trip.budget_data.total) }}
+            </strong>
+
+            <span>
+                Estimated Cost
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <strong>
+                {{ trip.transport }}
+            </strong>
+
+            <span>
+                Transport
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- SAVED TRIP OVERVIEW -->
+
+    {% if saved %}
+
+    <div class="saved-trip-overview">
+
+        <div class="saved-trip-overview-header">
+
+            <div>
+
+                <span class="badge">
+                    💾 SAVED TRIP
+                </span>
+
+                <h2>
+                    Trip Overview
+                </h2>
+
+                <p>
+                    Your saved TravelGenie trip details at a glance.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="saved-trip-info-grid">
+
+            <!-- Starting Location -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    📍
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Starting Location
+                    </span>
+
+                    <strong>
+                        {{ trip.start_location }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Destination -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    🏁
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Destination
+                    </span>
+
+                    <strong>
+                        {{ trip.destination }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Duration -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    📅
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Trip Duration
+                    </span>
+
+                    <strong>
+                        {{ trip.days }} days
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Travelers -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    👥
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Travelers
+                    </span>
+
+                    <strong>
+                        {{ trip.travelers }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Budget -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    💰
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Your Budget
+                    </span>
+
+                    <strong>
+                        ₹{{ "%.0f"|format(trip.budget) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- Estimated Cost -->
+
+            <div class="saved-info-card">
+
+                <span class="saved-info-icon">
+                    📊
+                </span>
+
+                <div>
+
+                    <span class="saved-info-label">
+                        Estimated Cost
+                    </span>
+
+                    <strong>
+                        ₹{{ "%.0f"|format(trip.budget_data.total) }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SAVED BUDGET STATUS -->
+
+        {% if trip.budget_data.total <= trip.budget %}
+
+        <div class="saved-budget-status saved-budget-success">
+
+            ✅ This trip is within your budget.
+
+        </div>
+
+        {% else %}
+
+        <div class="saved-budget-status saved-budget-warning">
+
+            ⚠️ This trip is above your planned budget.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- TRIP PREFERENCES -->
+
+    {% if saved %}
+
+    <div class="trip-preferences-card">
+
+        <div class="trip-preferences-header">
+
+            <div>
+
+                <span class="trip-preferences-label">
+                    ⚙️ TRIP PREFERENCES
+                </span>
+
+                <h2>
+                    Your Travel Preferences
+                </h2>
+
+                <p>
+                    Preferences selected while creating this trip.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="trip-preferences-grid">
+
+            <!-- PURPOSE -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    🎯
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Travel Purpose
+                    </span>
+
+                    <strong>
+                        {{ trip.purpose or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- INTERESTS -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    ❤️
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Interests
+                    </span>
+
+                    <strong>
+
+                        {% if trip.interests %}
+
+                            {{ trip.interests | join(", ") }}
+
+                        {% else %}
+
+                            Not specified
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- TRANSPORT -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    🚌
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Preferred Transport
+                    </span>
+
+                    <strong>
+                        {{ trip.transport or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCOMMODATION -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    🏨
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Stay Preference
+                    </span>
+
+                    <strong>
+                        {{ trip.accommodation or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOD -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    🍴
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Food Preference
+                    </span>
+
+                    <strong>
+                        {{ trip.food or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY LEVEL -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    ⚡
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Activity Level
+                    </span>
+
+                    <strong>
+                        {{ trip.activity_level or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- LANGUAGE -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    🌐
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Preferred Language
+                    </span>
+
+                    <strong>
+                        {{ trip.language or "Not specified" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCESSIBILITY -->
+
+            <div class="preference-item">
+
+                <span class="preference-icon">
+                    ♿
+                </span>
+
+                <div>
+
+                    <span class="preference-label">
+                        Accessibility
+                    </span>
+
+                    <strong>
+                        {{ trip.accessibility or "None" }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SPECIAL PREFERENCE -->
+
+        {% if trip.special_preference %}
+
+        <div class="special-preference-box">
+
+            <span class="preference-icon">
+                📝
+            </span>
+
+            <div>
+
+                <span class="preference-label">
+                    Special Preference
+                </span>
+
+                <p>
+                    {{ trip.special_preference }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="result-actions">
+
+        <!-- BUDGET -->
+
+        <a
+            href="{{ url_for('budget') }}"
+            class="primary-btn"
+        >
+            💰 Optimize Budget
+        </a>
+
+
+        <!-- SMART MAP -->
+
+        <a
+            href="{{ url_for('map_view') }}"
+            class="secondary-btn"
+        >
+            🗺️ Open Smart Map
+        </a>
+
+
+        <!-- DIRECTIONS -->
+
+        <a
+            href="#route-section"
+            class="secondary-btn"
+        >
+            🧭 Get Directions
+        </a>
+
+
+        <!-- STAYS -->
+
+        <a
+            href="{{ url_for('stays') }}"
+            class="secondary-btn"
+        >
+            🏨 Explore Stays
+        </a>
+
+
+        <!-- FOOD -->
+
+        <a
+            href="{{ url_for('food') }}"
+            class="secondary-btn"
+        >
+            🍴 Food
+        </a>
+
+
+        <!-- NEARBY -->
+
+        <a
+            href="{{ url_for('nearby') }}"
+            class="secondary-btn"
+        >
+            📍 Nearby Places
+        </a>
+
+
+        <!-- LOCAL GUIDES -->
+
+        <a
+            href="{{ url_for('guides') }}"
+            class="secondary-btn guide-action-btn"
+        >
+            👤 Local Guides
+        </a>
+
+    </div>
+
+
+    <!-- TWO COLUMN CONTENT -->
+
+    <div class="content-two-column">
+
+
+        <!-- LEFT COLUMN -->
+
+        <div>
+
+
+            <!-- ITINERARY -->
+
+            <div class="section-card">
+
+                <h2>
+                    🗓️ Day-by-Day Itinerary
+                </h2>
+
+
+                {% for day in trip.itinerary %}
+
+                <div class="day-card">
+
+                    <div class="day-title">
+
+                        <span>
+                            DAY {{ day.day }}
+                        </span>
+
+                        <h3>
+                            {{ day.title }}
+                        </h3>
+
+                    </div>
+
+
+                    {% for place in day.places %}
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-time">
+                            {{ place.time }}
+                        </div>
+
+
+                        <div class="timeline-content">
+
+                            <h4>
+                                {{ place.place }}
+                            </h4>
+
+                            <p>
+                                {{ place.category }}
+                                ·
+                                {{ place.duration }} min
+                            </p>
+
+                            <span class="cost">
+                                ₹{{ place.cost }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ROUTES / DIRECTIONS -->
+
+            <div
+                class="section-card route-section"
+                id="route-section"
+            >
+
+                <h2>
+                    🧭 Routes & Directions
+                </h2>
+
+
+                <p class="route-intro">
+
+                    Get directions from your starting location
+                    to your destination and planned tourist places.
+
+                </p>
+
+
+                <!-- START LOCATION -->
+
+                <div class="route-location-card">
+
+                    <div class="route-location-icon">
+                        📍
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Starting Location
+                        </span>
+
+                        <strong>
+                            {{ trip.start_location }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESTINATION -->
+
+                <div class="route-location-card">
+
+                    <div class="route-location-icon">
+                        🏁
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Destination
+                        </span>
+
+                        <strong>
+                            {{ trip.destination }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- GOOGLE MAPS DIRECTIONS -->
+
+                {% if location.success %}
+
+                <a
+                    href="https://www.google.com/maps/dir/?api=1&destination={{ location.lat }},{{ location.lon }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="route-btn"
+                >
+                    🧭 Open Directions
+                </a>
+
+                {% else %}
+
+                <p class="route-unavailable">
+
+                    Destination coordinates are currently unavailable.
+
+                </p>
+
+                {% endif %}
+
+
+                <!-- PLANNED PLACES -->
+
+                <h3 class="route-subtitle">
+                    📌 Planned Places
+                </h3>
+
+
+                {% for day in trip.itinerary %}
+
+                    {% for place in day.places %}
+
+                    <div class="route-place">
+
+                        <div>
+
+                            <strong>
+                                {{ place.place }}
+                            </strong>
+
+                            <span>
+                                Day {{ day.day }}
+                                ·
+                                {{ place.category }}
+                            </span>
+
+                        </div>
+
+
+                        {% if place.lat and place.lon %}
+
+                        <a
+                            href="https://www.google.com/maps/dir/?api=1&destination={{ place.lat }},{{ place.lon }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="small-route-btn"
+                        >
+                            🧭 Directions
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT COLUMN -->
+
+        <div>
+
+
+            <!-- WEATHER -->
+
+            <div class="section-card">
+
+                <h2>
+                    🌤️ Current Weather
+                </h2>
+
+
+                {% if weather.success %}
+
+                <div class="weather-main">
+
+                    <div class="weather-icon">
+
+                        {% if "rain" in weather.description|lower %}
+
+                            🌧️
+
+                        {% elif "cloud" in weather.description|lower %}
+
+                            ☁️
+
+                        {% elif "clear" in weather.description|lower %}
+
+                            ☀️
+
+                        {% elif "storm" in weather.description|lower %}
+
+                            ⛈️
+
+                        {% else %}
+
+                            🌤️
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div>
+
+                        <strong class="weather-temperature">
+                            {{ weather.temperature }}°C
+                        </strong>
+
+                        <p>
+                            {{ weather.description }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        📍 City
+                    </span>
+
+                    <strong>
+                        {{ weather.city }}
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        🤗 Feels Like
+                    </span>
+
+                    <strong>
+                        {{ weather.feels_like }}°C
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        💧 Humidity
+                    </span>
+
+                    <strong>
+                        {{ weather.humidity }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        ☁️ Condition
+                    </span>
+
+                    <strong>
+                        {{ weather.description }}
+                    </strong>
+
+                </div>
+
+
+                {% else %}
+
+                <p>
+                    Weather information is currently unavailable.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- WEATHER TRAVEL ADVICE -->
+
+            {% if weather.success %}
+
+            <div class="section-card weather-advice">
+
+                <h2>
+                    🧳 Weather-Based Travel Advice
+                </h2>
+
+
+                {% set temp = weather.temperature %}
+                {% set humidity = weather.humidity %}
+                {% set condition = weather.description|lower %}
+
+
+                {% if
+                    "rain" in condition
+                    or "drizzle" in condition
+                    or "thunderstorm" in condition
+                %}
+
+                <div class="advice-item">
+
+                    <span>
+                        ☔
+                    </span>
+
+                    <p>
+
+                        Rain may affect outdoor activities.
+                        Carry an umbrella or rain protection
+                        and keep flexible travel plans.
+
+                    </p>
+
+                </div>
+
+
+                {% elif temp >= 35 %}
+
+                <div class="advice-item">
+
+                    <span>
+                        🥤
+                    </span>
+
+                    <p>
+
+                        It is quite hot. Stay hydrated and
+                        prefer outdoor sightseeing during
+                        cooler morning or evening hours.
+
+                    </p>
+
+                </div>
+
+
+                {% elif temp >= 30 %}
+
+                <div class="advice-item">
+
+                    <span>
+                        🧴
+                    </span>
+
+                    <p>
+
+                        Warm weather is expected.
+                        Carry water, use sun protection
+                        and take breaks during outdoor travel.
+
+                    </p>
+
+                </div>
+
+
+                {% elif temp <= 15 %}
+
+                <div class="advice-item">
+
+                    <span>
+                        🧥
+                    </span>
+
+                    <p>
+
+                        The weather is relatively cool.
+                        Carry suitable warm clothing,
+                        especially for morning and evening.
+
+                    </p>
+
+                </div>
+
+
+                {% else %}
+
+                <div class="advice-item">
+
+                    <span>
+                        🌿
+                    </span>
+
+                    <p>
+
+                        The current weather looks comfortable
+                        for sightseeing. Enjoy your outdoor
+                        activities while following local conditions.
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+                {% if humidity >= 80 %}
+
+                <div class="advice-item">
+
+                    <span>
+                        💧
+                    </span>
+
+                    <p>
+
+                        Humidity is high, so stay hydrated
+                        and take regular breaks.
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- BUDGET -->
+
+            <div class="section-card">
+
+                <h2>
+                    💰 Budget Breakdown
+                </h2>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        Transport
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.transport }}
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        Stay
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.stay }}
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        Food
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.food }}
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        Activities
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.activities }}
+                    </strong>
+
+                </div>
+
+
+                <div class="budget-row">
+
+                    <span>
+                        Local / Other
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.other }}
+                    </strong>
+
+                </div>
+
+
+                <hr>
+
+
+                <div class="budget-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong>
+                        ₹{{ trip.budget_data.total }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUDGET STATUS -->
+
+            <div class="budget-status-card">
+
+                <div class="budget-status-header">
+
+                    <div>
+
+                        <span class="budget-status-label">
+                            💰 BUDGET STATUS
+                        </span>
+
+                        <h3>
+                            Your Trip Budget
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="budget-status-values">
+
+                    <div>
+
+                        <span>
+                            Your Budget
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.0f"|format(trip.budget) }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Estimated Cost
+                        </span>
+
+                        <strong>
+                            ₹{{ "%.0f"|format(trip.budget_data.total) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUDGET PROGRESS -->
+
+                <div class="budget-progress-container">
+
+                    {% if trip.budget > 0 %}
+
+                        {% set budget_percentage =
+                            (trip.budget_data.total / trip.budget * 100)
+                        %}
+
+
+                        {% if budget_percentage > 100 %}
+
+                            {% set display_percentage = 100 %}
+
+                        {% else %}
+
+                            {% set display_percentage = budget_percentage %}
+
+                        {% endif %}
+
+
+                        <div class="budget-progress-bar">
+
+                            <div
+                                class="budget-progress-fill
+                                {% if budget_percentage > 100 %}
+                                    over
+                                {% endif %}"
+                                style="width: {{ display_percentage }}%;"
+                            >
+                            </div>
+
+                        </div>
+
+
+                        <div class="budget-progress-text">
+
+                            <span>
+                                {{ "%.0f"|format(budget_percentage) }}% of budget
+                            </span>
+
+
+                            {% if budget_percentage <= 100 %}
+
+                            <span>
+                                Within limit
+                            </span>
+
+                            {% else %}
+
+                            <span>
+                                Above limit
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- BUDGET DIFFERENCE -->
+
+                {% if trip.budget_data.total <= trip.budget %}
+
+                    {% set remaining =
+                        trip.budget - trip.budget_data.total
+                    %}
+
+
+                    <div class="budget-result budget-result-success">
+
+                        <span>
+                            ✅
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Within Budget
+                            </strong>
+
+                            <p>
+
+                                You have approximately
+
+                                <strong>
+                                    ₹{{ "%.0f"|format(remaining) }}
+                                </strong>
+
+                                remaining.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    {% set extra =
+                        trip.budget_data.total - trip.budget
+                    %}
+
+
+                    <div class="budget-result budget-result-warning">
+
+                        <span>
+                            ⚠️
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Over Budget
+                            </strong>
+
+                            <p>
+
+                                Your estimated cost is
+
+                                <strong>
+                                    ₹{{ "%.0f"|format(extra) }}
+                                </strong>
+
+                                above your budget.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- FOOD -->
+
+            <div class="section-card">
+
+                <h2>
+                    🍴 Local Food
+                </h2>
+
+
+                {% for food in trip.foods %}
+
+                <span class="tag">
+                    {{ food }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- TIPS -->
+
+            <div class="section-card">
+
+                <h2>
+                    💡 Travel Tips
+                </h2>
+
+
+                {% for tip in trip.tips %}
+
+                <p>
+                    • {{ tip }}
+                </p>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SAVE TRIP -->
+
+    {% if not saved %}
+
+    <form
+        method="POST"
+        action="{{ url_for('save_trip') }}"
+        class="save-trip-form"
+    >
+
+        <button
+            type="submit"
+            class="generate-btn"
+        >
+            ❤️ Save This Trip
+        </button>
+
+    </form>
+
+    {% endif %}
+
+</section>
+
+
+<!-- MAP LOCATION DATA -->
+
+{% if location.success %}
+
+<script>
+
+    const destinationLatitude = {{ location.lat }};
+
+    const destinationLongitude = {{ location.lon }};
+
+    const destinationName =
+        {{ location.name | tojson }};
+
+</script>
+
+{% else %}
+
+<script>
+
+    const destinationLatitude = null;
+
+    const destinationLongitude = null;
+
+    const destinationName = "";
+
+</script>
+
+{% endif %}
+
+
+<!-- ROUTE STYLING -->
+
+<style>
+
+.route-section {
+    margin-top: 25px;
+}
+
+.route-intro {
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.route-location-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.route-location-icon {
+    font-size: 28px;
+}
+
+.route-location-card span {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.route-location-card strong {
+    display: block;
+    font-size: 16px;
+}
+
+.route-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    background: #2563eb;
+    color: white;
+}
+
+.route-btn:hover {
+    opacity: 0.9;
+}
+
+.route-subtitle {
+    margin-top: 25px;
+    margin-bottom: 12px;
+}
+
+.route-place {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.route-place strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.route-place span {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.small-route-btn {
+    white-space: nowrap;
+    padding: 8px 12px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.small-route-btn:hover {
+    opacity: 0.85;
+}
+
+
+/* =========================
+   LOCAL GUIDES BUTTON
+========================= */
+
+.guide-action-btn {
+    position: relative;
+}
+
+.guide-action-btn::after {
+    content: "NEW";
+    font-size: 9px;
+    font-weight: bold;
+    background: #14b8a6;
+    color: white;
+    padding: 3px 5px;
+    border-radius: 8px;
+    position: absolute;
+    top: -8px;
+    right: -5px;
+}
+
+
+/* =========================
+   WEATHER
+========================= */
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.weather-icon {
+    font-size: 48px;
+}
+
+.weather-temperature {
+    font-size: 32px;
+}
+
+.weather-main p {
+    margin: 4px 0 0;
+}
+
+.weather-advice {
+    border-left: 5px solid #22c55e;
+}
+
+.advice-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.advice-item:last-child {
+    margin-bottom: 0;
+}
+
+.advice-item span {
+    font-size: 24px;
+}
+
+.advice-item p {
+    margin: 2px 0;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+    .route-place {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .small-route-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .route-btn {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .guide-action-btn {
+        margin-top: 8px;
+    }
+
+}
+
+
+/* =========================
+   SAVED TRIP OVERVIEW
+========================= */
+
+.saved-trip-overview {
+    margin-top: 25px;
+    padding: 24px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+.saved-trip-overview-header h2 {
+    margin: 12px 0 6px;
+}
+
+.saved-trip-overview-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.saved-trip-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.saved-info-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.saved-info-icon {
+    font-size: 27px;
+    flex-shrink: 0;
+}
+
+.saved-info-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.saved-info-card strong {
+    display: block;
+    font-size: 16px;
+    word-break: break-word;
+}
+
+.saved-budget-status {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.saved-budget-success {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+}
+
+.saved-budget-warning {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+
+@media (max-width: 700px) {
+
+    .saved-trip-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .saved-trip-overview {
+        padding: 18px;
+    }
+
+}
+
+
+/* =========================
+   BUDGET STATUS
+========================= */
+
+.budget-status-card {
+    margin-top: 20px;
+    padding: 22px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.budget-status-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.budget-status-header h3 {
+    margin: 7px 0 0;
+    font-size: 21px;
+}
+
+
+.budget-status-values {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.budget-status-values > div {
+    padding: 15px;
+    border-radius: 13px;
+    background: #f8fafc;
+}
+
+.budget-status-values span {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.budget-status-values strong {
+    font-size: 20px;
+}
+
+
+/* Progress Bar */
+
+.budget-progress-container {
+    margin-top: 22px;
+}
+
+.budget-progress-bar {
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e5e7eb;
+}
+
+.budget-progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: #22c55e;
+    transition: width 0.5s ease;
+}
+
+.budget-progress-fill.over {
+    background: #ef4444;
+}
+
+.budget-progress-text {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+
+/* Budget Result */
+
+.budget-result {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 14px;
+}
+
+.budget-result > span {
+    font-size: 23px;
+}
+
+.budget-result strong {
+    font-size: 15px;
+}
+
+.budget-result p {
+    margin: 5px 0 0;
+    line-height: 1.5;
+}
+
+.budget-result-success {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+}
+
+.budget-result-warning {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .budget-status-values {
+        grid-template-columns: 1fr;
+    }
+
+    .budget-progress-text {
+        flex-direction: column;
+        gap: 3px;
+    }
+
+}
+
+
+/* =========================
+   TRIP PREFERENCES
+========================= */
+
+.trip-preferences-card {
+    margin-top: 25px;
+    padding: 24px;
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+}
+
+.trip-preferences-header h2 {
+    margin: 12px 0 6px;
+    font-size: 23px;
+}
+
+.trip-preferences-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.trip-preferences-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+
+.trip-preferences-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 22px;
+}
+
+.preference-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.preference-icon {
+    font-size: 27px;
+    flex-shrink: 0;
+}
+
+.preference-label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.preference-item strong {
+    display: block;
+    font-size: 15px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.special-preference-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 15px;
+    padding: 17px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+}
+
+.special-preference-box p {
+    margin: 5px 0 0;
+    line-height: 1.5;
+    color: #334155;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .trip-preferences-card {
+        padding: 18px;
+    }
+
+    .trip-preferences-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}
+Budget Optimizer
+{% endblock %}
+
+{% block content %}
+
+<section class="budget-page">
+
+    <div class="planner-header">
+
+        <div class="badge">
+            💰 SMART BUDGET OPTIMIZER
+        </div>
+
+        <h1>
+            Optimize Your {{ trip.destination }} Trip
+        </h1>
+
+        <p>
+            TravelGenie compares your budget with the estimated trip cost
+            and suggests ways to save money.
+        </p>
+
+    </div>
+
+
+    <!-- BUDGET COMPARISON -->
+
+    <div class="budget-comparison">
+
+        <div class="budget-box">
+
+            <span>
+                Your Budget
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(trip.budget) }}
+            </strong>
+
+        </div>
+
+
+        <div class="budget-box">
+
+            <span>
+                Estimated Cost
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(trip.budget_data.total) }}
+            </strong>
+
+        </div>
+
+
+        <div class="budget-box highlight">
+
+            <span>
+                Optimized Cost
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(optimized_cost) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- COST BREAKDOWN -->
+
+    <div class="section-card">
+
+        <h2>
+            🧾 Trip Cost Breakdown
+        </h2>
+
+        <div class="cost-grid">
+
+            <div class="cost-item">
+                <span>🚌 Transport</span>
+                <strong>
+                    ₹{{ "%.0f"|format(trip.budget_data.transport) }}
+                </strong>
+            </div>
+
+            <div class="cost-item">
+                <span>🏨 Stay</span>
+                <strong>
+                    ₹{{ "%.0f"|format(trip.budget_data.stay) }}
+                </strong>
+            </div>
+
+            <div class="cost-item">
+                <span>🍴 Food</span>
+                <strong>
+                    ₹{{ "%.0f"|format(trip.budget_data.food) }}
+                </strong>
+            </div>
+
+            <div class="cost-item">
+                <span>🎯 Activities</span>
+                <strong>
+                    ₹{{ "%.0f"|format(trip.budget_data.activities) }}
+                </strong>
+            </div>
+
+            <div class="cost-item">
+                <span>🚕 Local / Other</span>
+                <strong>
+                    ₹{{ "%.0f"|format(trip.budget_data.other) }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUDGET STATUS -->
+
+    {% if optimized_cost <= trip.budget %}
+
+    <div class="success-card">
+
+        <h2>
+            🎉 Your optimized trip fits your budget!
+        </h2>
+
+        <p>
+            Estimated optimized cost:
+            <strong>
+                ₹{{ "%.0f"|format(optimized_cost) }}
+            </strong>
+        </p>
+
+        <p>
+            You have approximately
+            <strong>
+                ₹{{ "%.0f"|format(trip.budget - optimized_cost) }}
+            </strong>
+            remaining in your budget.
+        </p>
+
+    </div>
+
+    {% else %}
+
+    <div class="warning-card">
+
+        <h2>
+            ⚠️ Your trip is above budget
+        </h2>
+
+        <p>
+            Your optimized trip is approximately
+            <strong>
+                ₹{{ "%.0f"|format(optimized_cost - trip.budget) }}
+            </strong>
+            above your budget.
+        </p>
+
+        <p>
+            Try some of the recommendations below.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- SUGGESTIONS -->
+
+    <div class="section-card">
+
+        <h2>
+            💡 TravelGenie Suggestions
+        </h2>
+
+        {% if suggestions %}
+
+            {% for suggestion in suggestions %}
+
+            <div class="suggestion">
+
+                <span>💡</span>
+
+                <p>
+                    {{ suggestion }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="suggestion">
+
+                <span>✅</span>
+
+                <p>
+                    Your current selections are already optimized.
+                    No major changes are required.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- SAVINGS SUMMARY -->
+
+    {% if optimized_cost < trip.budget_data.total %}
+
+    <div class="section-card savings-card">
+
+        <h2>
+            💵 Potential Savings
+        </h2>
+
+        <p>
+            TravelGenie can reduce the estimated cost by approximately
+            <strong>
+                ₹{{ "%.0f"|format(
+                    trip.budget_data.total - optimized_cost
+                ) }}
+            </strong>
+            based on the available optimization suggestions.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="budget-actions">
+
+        <a
+            href="{{ url_for('result') }}"
+            class="primary-btn"
+        >
+            ← Back to Trip
+        </a>
+
+        <a
+            href="{{ url_for('map_view') }}"
+            class="secondary-btn"
+        >
+            🗺️ Smart Map
+        </a>
+
+        <a
+            href="{{ url_for('stays') }}"
+            class="secondary-btn"
+        >
+            🏨 Explore Stays
+        </a>
+
+        <a
+            href="{{ url_for('food') }}"
+            class="secondary-btn"
+        >
+            🍴 Explore Food
+        </a>
+
+    </div>
+
+</section>
+
+
+<style>
+
+.budget-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 70px;
+}
+
+.planner-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.planner-header .badge {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.planner-header h1 {
+    margin-bottom: 12px;
+}
+
+.planner-header p {
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+
+
+/* BUDGET COMPARISON */
+
+.budget-comparison {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.budget-box {
+    padding: 28px 20px;
+    border-radius: 18px;
+    text-align: center;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.budget-box span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.budget-box strong {
+    display: block;
+    font-size: 30px;
+}
+
+.budget-box.highlight {
+    border: 2px solid #22c55e;
+}
+
+
+/* SECTION CARD */
+
+.section-card {
+    margin-bottom: 25px;
+    padding: 28px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.section-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+
+/* COST GRID */
+
+.cost-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.cost-item {
+    padding: 18px;
+    border-radius: 15px;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.cost-item span {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.cost-item strong {
+    font-size: 20px;
+}
+
+
+/* SUCCESS */
+
+.success-card {
+    margin-bottom: 25px;
+    padding: 28px;
+    border-radius: 20px;
+    background: #ecfdf5;
+    border: 1px solid #86efac;
+}
+
+.success-card h2 {
+    margin-top: 0;
+}
+
+
+/* WARNING */
+
+.warning-card {
+    margin-bottom: 25px;
+    padding: 28px;
+    border-radius: 20px;
+    background: #fff7ed;
+    border: 1px solid #fdba74;
+}
+
+.warning-card h2 {
+    margin-top: 0;
+}
+
+
+/* SUGGESTION */
+
+.suggestion {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+
+.suggestion span {
+    font-size: 22px;
+}
+
+.suggestion p {
+    margin: 2px 0;
+    line-height: 1.5;
+}
+
+
+/* SAVINGS */
+
+.savings-card {
+    border-left: 5px solid #22c55e;
+}
+
+
+/* BUTTONS */
+
+.budget-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.primary-btn,
+.secondary-btn {
+    display: inline-block;
+    padding: 13px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover {
+    transform: translateY(-2px);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+    .budget-comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .cost-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .budget-page {
+        padding: 25px 15px 50px;
+    }
+
+    .section-card {
+        padding: 20px;
+    }
+
+    .cost-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .budget-actions {
+        flex-direction: column;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        text-align: center;
+    }
+
+}
+
+</style>
+
+{% endblock %}

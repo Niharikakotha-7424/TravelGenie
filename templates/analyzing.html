@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+TravelGenie AI
+{% endblock %}
+
+{% block content %}
+
+<section class="analyzing">
+
+    <div class="ai-loader">
+
+        <div class="loader-circle">
+            ✈️
+        </div>
+
+        <h1>
+            TravelGenie is planning your trip...
+        </h1>
+
+        <p>
+            Analyzing your preferences and creating
+            a personalized travel experience.
+        </p>
+
+        <div class="analysis-list">
+
+            <div>✓ Checking destination information</div>
+            <div>✓ Matching your interests</div>
+            <div>✓ Calculating estimated costs</div>
+            <div>✓ Optimizing your itinerary</div>
+            <div>✓ Preparing your smart map</div>
+
+        </div>
+
+        <a
+            href="{{ url_for('result') }}"
+            class="primary-btn"
+        >
+            View My Trip
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

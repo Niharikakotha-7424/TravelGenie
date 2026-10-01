@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Guide Request Submitted - TravelGenie</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                linear-gradient(
+                    135deg,
+                    #eef7ff,
+                    #f0fdfa
+                );
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            width: 100%;
+            padding: 18px 6%;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow:
+                0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logo span {
+            color: #14b8a6;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .success-container {
+            width: 90%;
+            max-width: 850px;
+            margin: 55px auto;
+            flex: 1;
+        }
+
+
+        /* =========================
+           SUCCESS CARD
+        ========================= */
+
+        .success-card {
+            background: white;
+            border-radius: 24px;
+            padding: 45px;
+            text-align: center;
+
+            box-shadow:
+                0 15px 45px rgba(0,0,0,0.10);
+
+            border: 1px solid #e5e7eb;
+        }
+
+
+        .success-icon {
+            width: 90px;
+            height: 90px;
+
+            margin: 0 auto 22px;
+
+            border-radius: 50%;
+
+            background: #dcfce7;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 48px;
+        }
+
+
+        .success-card h1 {
+            font-size: 34px;
+            color: #166534;
+            margin-bottom: 12px;
+        }
+
+
+        .success-message {
+            color: #6b7280;
+            font-size: 17px;
+            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto 30px;
+        }
+
+
+        /* =========================
+           REQUEST DETAILS
+        ========================= */
+
+        .details-card {
+            margin-top: 30px;
+            padding: 25px;
+
+            background: #f8fafc;
+
+            border-radius: 18px;
+
+            text-align: left;
+
+            border: 1px solid #e2e8f0;
+        }
+
+
+        .details-card h2 {
+            text-align: center;
+            margin-bottom: 22px;
+            color: #111827;
+            font-size: 22px;
+        }
+
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .detail-label {
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+
+        .detail-value {
+            color: #111827;
+            font-weight: 500;
+            text-align: right;
+        }
+
+
+        .status {
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background: #fef3c7;
+
+            color: #92400e;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           INFO BOX
+        ========================= */
+
+        .info-box {
+            margin-top: 25px;
+
+            padding: 16px;
+
+            border-radius: 12px;
+
+            background: #eff6ff;
+
+            color: #1e40af;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+
+            margin-top: 30px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .btn {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 13px 22px;
+
+            border-radius: 12px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+
+        .primary-btn {
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #14b8a6
+                );
+
+            color: white;
+        }
+
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(37,99,235,0.25);
+        }
+
+
+        .secondary-btn {
+            background: white;
+
+            color: #2563eb;
+
+            border: 1px solid #2563eb;
+        }
+
+
+        .secondary-btn:hover {
+            background: #eff6ff;
+
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            background: white;
+
+            color: #6b7280;
+
+            border-top:
+                1px solid #e5e7eb;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 15px 4%;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .success-container {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .success-card {
+                padding: 28px 20px;
+            }
+
+            .success-card h1 {
+                font-size: 27px;
+            }
+
+            .success-message {
+                font-size: 15px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Travel<span>Genie</span>
+        </div>
+
+
+        {% if user %}
+
+            <div class="user-name">
+                👋 {{ user.full_name or user.username }}
+            </div>
+
+        {% endif %}
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="success-container">
+
+        <div class="success-card">
+
+
+            <!-- SUCCESS ICON -->
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h1>
+                Guide Request Submitted!
+            </h1>
+
+
+            <p class="success-message">
+
+                Your guide request has been successfully
+                submitted to TravelGenie.
+
+                We have saved your request details and
+                it is currently waiting for confirmation.
+
+            </p>
+
+
+            <!-- =========================
+                 REQUEST DETAILS
+            ========================= -->
+
+            <div class="details-card">
+
+                <h2>
+                    🧭 Request Details
+                </h2>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Request ID
+                    </span>
+
+                    <span class="detail-value">
+                        #{{ guide_request.id }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Selected Guide
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.guide_name }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Destination
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.destination }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Traveler Name
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.traveler_name }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Travelers
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.travelers }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Preferred Date
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.preferred_date }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Preferred Time
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.preferred_time }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Language
+                    </span>
+
+                    <span class="detail-value">
+                        {{ guide_request.language }}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Status
+                    </span>
+
+                    <span class="detail-value">
+
+                        <span class="status">
+                            {{ guide_request.status }}
+                        </span>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- INFO -->
+
+            <div class="info-box">
+
+                💡 <strong>What's next?</strong><br>
+
+                Your request is currently marked as
+                <strong>Pending</strong>.
+
+                In the complete TravelGenie platform,
+                guide availability can be confirmed through
+                the guide/partner system.
+
+            </div>
+
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('guides') }}"
+                    class="btn secondary-btn"
+                >
+                    ← Back to Guides
+                </a>
+
+
+                <a
+                    href="{{ url_for('result') }}"
+                    class="btn primary-btn"
+                >
+                    🏠 Back to Trip
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        <p>
+            © 2026 TravelGenie ·
+            Your AI-powered smart travel companion 🌍
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>

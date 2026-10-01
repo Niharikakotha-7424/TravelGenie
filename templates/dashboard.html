@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard">
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <span class="badge">
+                TRAVELGENIE DASHBOARD
+            </span>
+
+            <h1>
+                Welcome, {{ user.full_name }} 👋
+            </h1>
+
+            <p>
+                Manage your travel plans in one place.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('planner') }}"
+            class="primary-btn"
+        >
+            + Plan New Trip
+        </a>
+
+    </div>
+
+
+    <div class="dashboard-stats">
+
+        <div class="stat-card">
+
+            <span>
+                Trips Planned
+            </span>
+
+            <strong>
+                {{ total_trips }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Total Planned Budget
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(total_budget) }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Estimated Spending
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(total_estimated) }}
+            </strong>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                Budget Difference
+            </span>
+
+            <strong>
+                ₹{{ "%.0f"|format(money_difference) }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-card">
+
+        <h2>
+            🧳 Recent Trips
+        </h2>
+
+        {% if trips %}
+
+        <div class="trip-list">
+
+            {% for trip in trips %}
+
+            <div class="trip-list-item">
+
+                <div>
+
+                    <h3>
+                        {{ trip.title }}
+                    </h3>
+
+                    <p>
+                        {{ trip.destination }}
+                        ·
+                        {{ trip.days }} days
+                        ·
+                        {{ trip.travelers }} travelers
+                    </p>
+
+                </div>
+
+                <a
+                    href="{{ url_for(
+                        'view_trip',
+                        trip_id=trip.id
+                    ) }}"
+                    class="secondary-btn"
+                >
+                    View
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <h3>
+                No trips yet
+            </h3>
+
+            <p>
+                Create your first smart travel plan.
+            </p>
+
+            <a
+                href="{{ url_for('planner') }}"
+                class="primary-btn"
+            >
+                Plan My Trip
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
